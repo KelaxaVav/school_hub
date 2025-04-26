@@ -27,8 +27,9 @@ import {
 import { Home, User, Users, Package, PencilRuler, Settings, Shield } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const routes = [
   {
@@ -75,6 +76,26 @@ interface LayoutProps {
 
 export function Layout({ children, hideNavigation }: LayoutProps) {
   const pathname = usePathname();
+    const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+        router.push("/login");
+    };
+
+    useEffect(() => {
+        const checkLoginStatus = () => {
+            // Replace with actual login status check
+            const token = localStorage.getItem("token");
+            if (!token) {
+                setIsLoggedIn(false);
+                router.push("/login");
+            }
+        };
+
+        checkLoginStatus();
+    }, [router]);
 
   return (
     <SidebarProvider>
@@ -112,7 +133,7 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
               <AvatarFallback>Admin</AvatarFallback>
             </Avatar>
             <p className="text-sm">Admin User</p>
-            <Button variant="outline" size="sm" className="w-full mt-2">
+            <Button variant="outline" size="sm" className="w-full mt-2" onClick={handleLogout}>
               Logout
             </Button>
           </div>
@@ -124,4 +145,5 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     </SidebarProvider>
   );
 }
+
 

@@ -104,8 +104,10 @@ export default function StudentsPage() {
     <Layout>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle>Students</CardTitle>
-          <CardDescription>Manage student records.</CardDescription>
+          <div>
+            <CardTitle>Students</CardTitle>
+            <CardDescription>Manage student records.</CardDescription>
+          </div>
           <Button variant="outline" onClick={() => router.push("/create-student")}>
             <Plus className="mr-2 h-4 w-4" /> Add Student
           </Button>
@@ -192,3 +194,4 @@ export default function StudentsPage() {
     </Layout>
   );
 }
+

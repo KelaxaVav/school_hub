@@ -63,9 +63,12 @@ const PermissionSchema = z.object({
 });
 
 interface Role {
-  id: string;
+  id: number;
   role_id:string;
   name: string;
+  created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
 }
 
 interface Permission {
@@ -104,7 +107,7 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
     options.headers = {
       ...options.headers,
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json', // Ensure Content-Type is set
+       'Content-Type': 'application/json', // Ensure Content-Type is set
     };
   }
 
@@ -120,7 +123,7 @@ const fetchRoles = async (): Promise<Role[]> => {
     if (data.status) {
       return data.data;
     } else {
-      toast.error(data.message || "Failed to fetch roles.");
+      toast.error(data.meta.message || "Failed to fetch roles.");
       return [];
     }
   } catch (error: any) {
@@ -136,7 +139,7 @@ const fetchPermissions = async (): Promise<Permission[]> => {
     if (data.status) {
       return data.data;
     } else {
-      toast.error(data.message || "Failed to fetch permissions.");
+      toast.error(data.meta.message || "Failed to fetch permissions.");
       return [];
     }
   } catch (error: any) {
@@ -157,9 +160,9 @@ const updateRolePermissions = async (roleId: string, permissionIds: string[]): P
 
     const data = await response.json();
     if (response.ok && data.status) {
-      toast.success(data.message || "Permissions updated successfully.");
+      toast.success(data.meta.message || "Permissions updated successfully!");
     } else {
-      toast.error(data.message || "Failed to update permissions.");
+      toast.error(data.meta.message || "Failed to update permissions.");
     }
   } catch (error: any) {
     toast.error(error.message || "An error occurred while updating permissions.");
@@ -330,7 +333,7 @@ export default function RolesPermissionsPage() {
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-red-500 text-red-50"
-                              onClick={() => onDeleteRole(role.id)}
+                              onClick={() => onDeleteRole(role.id.toString())}
                             >
                               Delete
                             </AlertDialogAction>
@@ -416,3 +419,4 @@ export default function RolesPermissionsPage() {
     </Layout>
   );
 }
+

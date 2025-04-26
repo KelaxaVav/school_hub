@@ -24,13 +24,14 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { Home, User, Users, Package, PencilRuler, Settings, Shield } from "lucide-react";
+import { Home, User, Users, Package, PencilRuler, Settings, Shield, Users2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import Loading from '@/components/Loading';
 
 
 const routes = [
@@ -52,7 +53,7 @@ const routes = [
    {
     label: "Users",
     href: "/users",
-    icon: Shield,
+    icon: Users2,
   },
   {
     label: "Inventory",
@@ -87,6 +88,7 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const dispatch = useDispatch();
     const username = useSelector((state: any) => state.user.username);
+    const isLoading = useSelector((state: any) => state.loading.isLoading);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -113,7 +115,9 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     }
 
   return (
-    <SidebarProvider>
+    
+      <SidebarProvider>
+       <Loading/>
       <Sidebar
         width="280px"
         collapsible="icon"
@@ -157,6 +161,8 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
       <SidebarInset>
         <div className="container py-4">{children}</div>
       </SidebarInset>
-    </SidebarProvider>
+      </SidebarProvider>
+    
   );
 }
+

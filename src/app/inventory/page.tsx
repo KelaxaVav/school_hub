@@ -28,19 +28,28 @@ import { Plus } from "lucide-react";
 interface InventoryItem {
   id: string;
   name: string;
-  description: string;
+  bookNo: string;
+  pageNo: number;
   quantity: number;
   unit: string;
 }
 
 const columns = [
   {
+    id: "rowNumber",
+    label: "#",
+  },
+  {
     id: "name",
     label: "Name",
   },
   {
-    id: "description",
-    label: "Description",
+    id: "bookNo",
+    label: "Book No",
+  },
+  {
+    id: "pageNo",
+    label: "Page No",
   },
   {
     id: "quantity",
@@ -57,21 +66,24 @@ const mockInventoryItems: InventoryItem[] = [
   {
     id: "1",
     name: "Notebook",
-    description: "A5 Notebook",
+    bookNo: "NB-001",
+    pageNo: 120,
     quantity: 200,
     unit: "pcs",
   },
   {
     id: "2",
     name: "Pen",
-    description: "Ballpoint Pen",
+    bookNo: "PN-002",
+    pageNo: 1,
     quantity: 500,
     unit: "pcs",
   },
   {
     id: "3",
     name: "Chair",
-    description: "Student Chair",
+    bookNo: "CH-003",
+    pageNo: 1,
     quantity: 100,
     unit: "pcs",
   },
@@ -123,11 +135,17 @@ export default function InventoryPage() {
                   </Label>
                   <Input id="name" defaultValue="" className="col-span-3" />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Description
+                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="bookNo" className="text-right">
+                    Book No
                   </Label>
-                  <Input id="description" defaultValue="" className="col-span-3" />
+                  <Input id="bookNo" defaultValue="" className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="pageNo" className="text-right">
+                    Page No
+                  </Label>
+                  <Input id="pageNo" defaultValue="" className="col-span-3" />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="quantity" className="text-right">
@@ -160,19 +178,32 @@ export default function InventoryPage() {
                 <>
                   {Array.from({length: 3}).map((_, i) => (
                     <TableRow key={i}>
-                      {columns.map((column) => (
-                        <TableCell key={column.id}>
-                          <Skeleton className="h-4 w-[80%]" />
-                        </TableCell>
-                      ))}
+                     <TableCell>{i + 1}</TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </>
               ) : (
-                mockInventoryItems.map((item) => (
+                mockInventoryItems.map((item, index) => (
                   <TableRow key={item.id}>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.description}</TableCell>
+                    <TableCell>{item.bookNo}</TableCell>
+                    <TableCell>{item.pageNo}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>{item.unit}</TableCell>
                   </TableRow>

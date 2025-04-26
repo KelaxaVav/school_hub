@@ -30,6 +30,8 @@ import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+
 
 const routes = [
   {
@@ -78,6 +80,8 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
   const pathname = usePathname();
     const router = useRouter();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const dispatch = useDispatch();
+    const username = useSelector((state: any) => state.user.username);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -138,7 +142,7 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
               <AvatarImage src="https://picsum.photos/50/50" alt="Admin" />
               <AvatarFallback>Admin</AvatarFallback>
             </Avatar>
-            <p className="text-sm">Admin User</p>
+            <p className="text-sm">{username}</p>
             <Button variant="outline" size="sm" className="w-full mt-2" onClick={handleLogout}>
               Logout
             </Button>
@@ -151,4 +155,5 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     </SidebarProvider>
   );
 }
+
 

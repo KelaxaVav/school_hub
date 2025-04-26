@@ -10,17 +10,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import Loading from "@/components/Loading";
 import { login } from '@/redux/features/userSlice';
 import { setLoading } from '@/redux/features/loadingSlice';
+import { toast } from 'react-toastify';
+
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -32,7 +31,6 @@ const FormSchema = z.object({
 });
 
 export default function LoginPage() {
-  const { toast } = useToast();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
@@ -71,11 +69,6 @@ export default function LoginPage() {
       const result = await response.json();
 
       if (response.ok && result.status) {
-        toast({
-          title: "Login successful.",
-          description: "Redirecting to dashboard...",
-        });
-
         localStorage.setItem("token", result.meta.access_token);
         setIsLoggedIn(true);
          // Dispatch login action to update Redux store
@@ -84,20 +77,13 @@ export default function LoginPage() {
           token: result.meta.access_token,
           userData: result.data, // Store the entire user data
         }));
+        toast.success("Login successful. Redirecting to dashboard...");
         router.push("/"); // Redirect to dashboard on successful login
       } else {
-        toast({
-          variant: "destructive",
-          title: "Login failed.",
-          description: result.message || "Invalid username or password.",
-        });
+       toast.error(result.message || "Invalid username or password.");
       }
     } catch (error:any) {
-      toast({
-        variant: "destructive",
-        title: "Login failed.",
-        description: error.message || "An error occurred during login.",
-      });
+      toast.error(error.message || "An error occurred during login.");
     } finally {
       dispatch(setLoading(false));
     }
@@ -110,7 +96,7 @@ export default function LoginPage() {
   return (
     
       <div className="container py-4 h-screen flex items-center justify-center">
-        {isLoading && <Loading />}
+       
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Login</CardTitle>

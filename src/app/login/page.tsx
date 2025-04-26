@@ -17,6 +17,9 @@ import { useForm, Controller } from "react-hook-form";
 import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { useDispatch } from 'react-redux';
+import { setLoading } from '@/redux/features/loadingSlice';
+import Loading from "@/components/Loading";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -30,8 +33,8 @@ const FormSchema = z.object({
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -52,7 +55,7 @@ export default function LoginPage() {
   }, [router]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    setLoading(true);
+    dispatch(setLoading(true));
 
     try {
       const response = await fetch('https://api.puthukkulammv.com/api/auth/login', {
@@ -88,7 +91,7 @@ export default function LoginPage() {
         description: error.message || "An error occurred during login.",
       });
     } finally {
-      setLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -99,6 +102,7 @@ export default function LoginPage() {
   return (
     
       <div className="container py-4 h-screen flex items-center justify-center">
+        <Loading />
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Login</CardTitle>
@@ -130,8 +134,8 @@ export default function LoginPage() {
                       )}
                     />
               </div>
-              <Button type="submit" className="ml-auto" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
+              <Button type="submit" className="ml-auto">
+                Login
               </Button>
             </form>
           </CardContent>

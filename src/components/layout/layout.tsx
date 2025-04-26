@@ -65,9 +65,10 @@ const routes = [
 
 interface LayoutProps {
   children: React.ReactNode;
+  hideNavigation?: boolean;
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, hideNavigation }: LayoutProps) {
   const pathname = usePathname();
 
   return (

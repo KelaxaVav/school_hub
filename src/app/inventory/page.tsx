@@ -23,7 +23,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Plus } from "lucide-react";
+import { Plus, Edit, Trash } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface InventoryItem {
   id: string;
@@ -31,7 +41,6 @@ interface InventoryItem {
   bookNo: string;
   pageNo: number;
   quantity: number;
-  unit: string;
 }
 
 const columns = [
@@ -56,8 +65,8 @@ const columns = [
     label: "Quantity",
   },
   {
-    id: "unit",
-    label: "Unit",
+    id: "actions",
+    label: "Actions",
   },
 ];
 
@@ -69,7 +78,6 @@ const mockInventoryItems: InventoryItem[] = [
     bookNo: "NB-001",
     pageNo: 120,
     quantity: 200,
-    unit: "pcs",
   },
   {
     id: "2",
@@ -77,7 +85,6 @@ const mockInventoryItems: InventoryItem[] = [
     bookNo: "PN-002",
     pageNo: 1,
     quantity: 500,
-    unit: "pcs",
   },
   {
     id: "3",
@@ -85,7 +92,6 @@ const mockInventoryItems: InventoryItem[] = [
     bookNo: "CH-003",
     pageNo: 1,
     quantity: 100,
-    unit: "pcs",
   },
 ];
 
@@ -153,12 +159,6 @@ export default function InventoryPage() {
                   </Label>
                   <Input id="quantity" defaultValue="" className="col-span-3" />
                 </div>
-                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="unit" className="text-right">
-                    Unit
-                  </Label>
-                  <Input id="unit" defaultValue="" className="col-span-3" />
-                </div>
               </div>
               <Button type="submit" onClick={handleAddItem}>Add</Button>
             </DialogContent>
@@ -191,8 +191,8 @@ export default function InventoryPage() {
                       <TableCell>
                         <Skeleton className="h-4 w-[80%]" />
                       </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-[80%]" />
+                       <TableCell>
+                        <Skeleton className="h-4 w-[60%]" />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -205,7 +205,29 @@ export default function InventoryPage() {
                     <TableCell>{item.bookNo}</TableCell>
                     <TableCell>{item.pageNo}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.unit}</TableCell>
+                     <TableCell>
+                      <Button variant="ghost" size="icon">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="text-red-500">
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete the inventory item
+                              and remove their data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-red-500 text-red-50">Delete</AlertDialogAction>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -216,3 +238,4 @@ export default function InventoryPage() {
     </Layout>
   );
 }
+

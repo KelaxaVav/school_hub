@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 222 84% 94%;
+    --background: 220 14% 96%; /* Light grey for backgrounds */
     --foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -18,11 +18,11 @@ body {
     --card-foreground: 222.2 47.4% 11.2%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --primary: 222.1 83.2% 53.4%;
+    --primary: 207 71% 53%; /* Calming blue (#3498db) for primary elements */
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --accent: 210 40% 96.1%;
+    --accent: 160 100% 39%; /* Green (#2ecc71) for success messages */
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -79,3 +79,4 @@ body {
     @apply bg-background text-foreground;
   }
 }
+

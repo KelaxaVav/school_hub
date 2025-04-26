@@ -12,7 +12,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Layout} from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Edit, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -169,11 +169,11 @@ export default function StudentsPage() {
                     <TableCell>{student.grade}</TableCell>
                     <TableCell>{student.stream}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm">
-                        Edit
+                      <Button variant="ghost" size="icon">
+                        <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm">
-                        Delete
+                      <Button variant="ghost" size="icon">
+                        <Trash className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -186,4 +186,3 @@ export default function StudentsPage() {
     </Layout>
   );
 }
-

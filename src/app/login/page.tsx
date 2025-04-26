@@ -18,9 +18,9 @@ import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading } from '@/redux/features/loadingSlice';
 import Loading from "@/components/Loading";
 import { login } from '@/redux/features/userSlice';
+import { setLoading } from '@/redux/features/loadingSlice';
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -152,4 +152,3 @@ export default function LoginPage() {
     
   );
 }
-

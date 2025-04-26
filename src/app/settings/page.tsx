@@ -18,6 +18,7 @@ export default function SettingsPage() {
   const [streamName, setStreamName] = useState("");
   const [schoolName, setSchoolName] = useState("");
   const [subjectName, setSubjectName] = useState("");
+  const [categoryName, setCategoryName] = useState("");
   const { toast } = useToast();
 
   const handleCreateStream = () => {
@@ -42,6 +43,14 @@ export default function SettingsPage() {
       description: `Subject "${subjectName}" has been created.`,
     });
     setSubjectName("");
+  };
+
+  const handleCreateCategory = () => {
+    toast({
+      title: "Category created.",
+      description: `Category "${categoryName}" has been created.`,
+    });
+    setCategoryName("");
   };
 
   return (
@@ -115,7 +124,31 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+         <Card className="w-1/4">
+          <CardHeader className="space-y-0 pb-2">
+            <CardTitle>Category Settings</CardTitle>
+            <CardDescription>Manage your Category settings.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="categoryName" className="text-right">
+                  Category Name
+                </Label>
+                <Input
+                  id="categoryName"
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <Button onClick={handleCreateCategory}>Create Category</Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );
 }
+

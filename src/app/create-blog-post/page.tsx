@@ -14,11 +14,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { EditorContent, EditorProvider, FloatingMenu, BubbleMenu } from "@tiptap/react";
+import { EditorContent, EditorProvider } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useEditor } from "@tiptap/react";
-import { Image as TiptapImage } from '@tiptap/extension-image'
+import Image from '@tiptap/extension-image'
 
 const placeholder = Placeholder.configure({
     placeholder: ({ node, view, getPos }) => {
@@ -35,7 +35,7 @@ export default function CreateBlogPost() {
      const { toast } = useToast();
 
       const editor = useEditor({
-        extensions: [StarterKit, placeholder,TiptapImage],
+        extensions: [StarterKit, placeholder,Image],
         content: content,
         onUpdate: ({ editor }) => {
             setContent(editor.getHTML());
@@ -121,5 +121,4 @@ export default function CreateBlogPost() {
         </Layout>
     );
 }
-
 

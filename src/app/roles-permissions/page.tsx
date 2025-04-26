@@ -89,13 +89,33 @@ const columns = [
   },
 ];
 
-const fetchRoles = async (token: string | null): Promise<Role[]> => {
+const customFetch = async (url: string, options: RequestInit = {}) => {
+  // Check if the URL is the login route
+  if (url.includes('/api/auth/login')) {
+    // If it's the login route, don't add the token
+    return fetch(url, options);
+  }
+
+  // Get the token from localStorage
+  const token = localStorage.getItem('token');
+
+  // If there's a token, add it to the headers
+  if (token) {
+    options.headers = {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json', // Ensure Content-Type is set
+    };
+  }
+
+  // Call the original fetch function
+  return fetch(url, options);
+};
+
+
+const fetchRoles = async (): Promise<Role[]> => {
   try {
-    const response = await fetch('https://api.puthukkulammv.com/api/roles', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await customFetch('https://api.puthukkulammv.com/api/roles');
     const data = await response.json();
     if (data.status) {
       return data.data;
@@ -109,13 +129,9 @@ const fetchRoles = async (token: string | null): Promise<Role[]> => {
   }
 };
 
-const fetchPermissions = async (token: string | null): Promise<Permission[]> => {
+const fetchPermissions = async (): Promise<Permission[]> => {
   try {
-    const response = await fetch('https://api.puthukkulammv.com/api/permissions', {
-       headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await customFetch('https://api.puthukkulammv.com/api/permissions');
     const data = await response.json();
     if (data.status) {
       return data.data;
@@ -131,7 +147,7 @@ const fetchPermissions = async (token: string | null): Promise<Permission[]> => 
 
 const updateRolePermissions = async (roleId: string, permissionIds: string[]): Promise<void> => {
   try {
-    const response = await fetch(`https://api.puthukkulammv.com/api/role/${roleId}/permission`, {
+    const response = await customFetch(`https://api.puthukkulammv.com/api/role/${roleId}/permission`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -166,21 +182,21 @@ export default function RolesPermissionsPage() {
   useEffect(() => {
     const loadRoles = async () => {
       setLoadingRoles(true);
-      const rolesData = await fetchRoles(token);
+      const rolesData = await fetchRoles();
       setRoles(rolesData);
       setLoadingRoles(false);
     };
 
     const loadPermissions = async () => {
       setLoadingPermissions(true);
-      const permissionsData = await fetchPermissions(token);
+      const permissionsData = await fetchPermissions();
       setPermissions(permissionsData);
       setLoadingPermissions(false);
     };
 
     loadRoles();
     loadPermissions();
-  }, [token]);
+  }, []);
 
     useEffect(() => {
     if (selectedRole) {

@@ -67,6 +67,28 @@ const columns = [
   },
 ];
 
+const customFetch = async (url: string, options: RequestInit = {}) => {
+  // Check if the URL is the login route
+  if (url.includes('/api/auth/login')) {
+    // If it's the login route, don't add the token
+    return fetch(url, options);
+  }
+
+  // Get the token from localStorage
+  const token = localStorage.getItem('token');
+
+  // If there's a token, add it to the headers
+  if (token) {
+    options.headers = {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  // Call the original fetch function
+  return fetch(url, options);
+};
+
 
 const fetchUsers = async (): Promise<User[]> => {
   // Simulate an API call
@@ -208,4 +230,3 @@ export default function UsersPage() {
     </Layout>
   );
 }
-

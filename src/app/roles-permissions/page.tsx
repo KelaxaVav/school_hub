@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,9 +31,23 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useDispatch } from "react-redux";
+import { setLoading } from "@/redux/features/loadingSlice";
+import { toast } from 'react-toastify';
+
 
 const RoleSchema = z.object({
   name: z.string().min(2, {
@@ -50,11 +64,12 @@ const PermissionSchema = z.object({
 
 interface Role {
   id: string;
+  role_id:string;
   name: string;
 }
 
 interface Permission {
-  id: string;
+  permission_id: string;
   name: string;
   description: string;
 }
@@ -75,60 +90,69 @@ const columns = [
 ];
 
 const fetchRoles = async (): Promise<Role[]> => {
-  // Simulate an API call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const mockRoles: Role[] = [
-        {
-          id: "1",
-          name: "Admin",
-        },
-        {
-          id: "2",
-          name: "Editor",
-        },
-        {
-          id: "3",
-          name: "Viewer",
-        },
-      ];
-      resolve(mockRoles);
-    }, 500);
-  });
+  try {
+    const response = await fetch('https://api.puthukkulammv.com/api/roles');
+    const data = await response.json();
+    if (data.status) {
+      return data.data;
+    } else {
+      toast.error(data.message || "Failed to fetch roles.");
+      return [];
+    }
+  } catch (error: any) {
+    toast.error(error.message || "An error occurred while fetching roles.");
+    return [];
+  }
 };
 
 const fetchPermissions = async (): Promise<Permission[]> => {
-  // Simulate an API call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const mockPermissions: Permission[] = [
-        {
-          id: "1",
-          name: "settings.view",
-          description: "View settings",
-        },
-        {
-          id: "2",
-          name: "settings.edit",
-          description: "Edit settings",
-        },
-        {
-          id: "3",
-          name: "users.create",
-          description: "Create users",
-        },
-      ];
-      resolve(mockPermissions);
-    }, 500);
-  });
+  try {
+    const response = await fetch('https://api.puthukkulammv.com/api/permissions');
+    const data = await response.json();
+    if (data.status) {
+      return data.data;
+    } else {
+      toast.error(data.message || "Failed to fetch permissions.");
+      return [];
+    }
+  } catch (error: any) {
+    toast.error(error.message || "An error occurred while fetching permissions.");
+    return [];
+  }
 };
+
+const updateRolePermissions = async (roleId: string, permissionIds: string[]): Promise<void> => {
+  try {
+    const response = await fetch(`https://api.puthukkulammv.com/api/role/${roleId}/permission`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ permission_ids: permissionIds }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data.status) {
+      toast.success(data.message || "Permissions updated successfully.");
+    } else {
+      toast.error(data.message || "Failed to update permissions.");
+    }
+  } catch (error: any) {
+    toast.error(error.message || "An error occurred while updating permissions.");
+  }
+};
+
 
 export default function RolesPermissionsPage() {
   const [loadingRoles, setLoadingRoles] = useState(true);
   const [loadingPermissions, setLoadingPermissions] = useState(true);
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const { toast } = useToast();
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     const loadRoles = async () => {
@@ -148,6 +172,21 @@ export default function RolesPermissionsPage() {
     loadRoles();
     loadPermissions();
   }, []);
+
+    useEffect(() => {
+    if (selectedRole) {
+      // Fetch the current permissions for the selected role (replace with your API endpoint)
+      const fetchCurrentPermissions = async () => {
+        setLoadingPermissions(true);
+        //const permissionsData = await fetchPermissions(); // Replace with API call
+        // Implement logic to filter the permission according to role
+
+        setLoadingPermissions(false);
+      };
+
+      fetchCurrentPermissions();
+    }
+  }, [selectedRole]);
 
   const onDeleteRole = async (id: string) => {
     // Simulate an API call
@@ -169,7 +208,7 @@ export default function RolesPermissionsPage() {
     return new Promise((resolve) => {
       setTimeout(() => {
         console.log(`Deleted permission with id: ${id}`);
-        setPermissions(permissions.filter((permission) => permission.id !== id));
+        setPermissions(permissions.filter((permission) => permission.permission_id !== id));
         toast({
           title: "Permission deleted.",
           description: "The permission has been deleted successfully.",
@@ -179,9 +218,34 @@ export default function RolesPermissionsPage() {
     });
   };
 
+    const handlePermissionChange = (permissionId: string) => {
+        setSelectedPermissions((prev) => {
+            if (prev.includes(permissionId)) {
+                return prev.filter((id) => id !== permissionId);
+            } else {
+                return [...prev, permissionId];
+            }
+        });
+    };
+
+    const handleSavePermissions = async () => {
+      if (!selectedRole) {
+        toast.error("Please select a role.");
+        return;
+      }
+
+      dispatch(setLoading(true));
+      try {
+        await updateRolePermissions(selectedRole, selectedPermissions);
+        toast.success("Permissions updated successfully!");
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+
   return (
     <Layout>
-      <div className="cards-container">
+      <div className="flex-responsive">
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle>Roles</CardTitle>
@@ -213,7 +277,7 @@ export default function RolesPermissionsPage() {
                   </>
                 ) : (
                   roles.map((role, index) => (
-                    <TableRow key={role.id}>
+                    <TableRow key={role.role_id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{role.name}</TableCell>
                       <TableCell>
@@ -262,12 +326,26 @@ export default function RolesPermissionsPage() {
             <CardDescription>Manage permissions.</CardDescription>
           </CardHeader>
           <CardContent>
+             <div>
+                <Label htmlFor="role">Select Role</Label>
+                <Select onValueChange={setSelectedRole}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role) => (
+                      <SelectItem key={role.role_id} value={role.role_id}>{role.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             <Table>
               <TableHeader>
                 <TableRow>
-                  {columns.map((column) => (
-                    <TableHead key={column.id}>{column.label}</TableHead>
-                  ))}
+                  <TableHead>#</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -280,6 +358,9 @@ export default function RolesPermissionsPage() {
                           <Skeleton className="h-4 w-[80%]" />
                         </TableCell>
                         <TableCell>
+                          <Skeleton className="h-4 w-[80%]" />
+                        </TableCell>
+                        <TableCell>
                           <Skeleton className="h-4 w-[60%]" />
                         </TableCell>
                       </TableRow>
@@ -287,46 +368,23 @@ export default function RolesPermissionsPage() {
                   </>
                 ) : (
                   permissions.map((permission, index) => (
-                    <TableRow key={permission.id}>
+                    <TableRow key={permission.permission_id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{permission.name}</TableCell>
+                      <TableCell>{permission.description}</TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-red-500"
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the
-                                permission and remove their data from our servers.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              className="bg-red-500 text-red-50"
-                              onClick={() => onDeletePermission(permission.id)}
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                         <Checkbox
+                            id={permission.permission_id}
+                            checked={selectedPermissions.includes(permission.permission_id)}
+                            onCheckedChange={() => handlePermissionChange(permission.permission_id)}
+                          />
                       </TableCell>
                     </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
+             <Button onClick={handleSavePermissions}>Save Permissions</Button>
           </CardContent>
         </Card>
       </div>

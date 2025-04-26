@@ -15,27 +15,65 @@ import { Button } from "@/components/ui/button";
 import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm, Controller } from "react-hook-form";
+import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const FormSchema = z.object({
+  category: z.string().min(2, {
+    message: "Category must be at least 2 characters.",
+  }),
+  grade: z.string().min(2, {
+    message: "Grade must be at least 2 characters.",
+  }),
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
+  }),
+  image: z.string().url({
+    message: "Please enter a valid image URL.",
+  }),
+  content: z.string().min(10, {
+    message: "Content must be at least 10 characters.",
+  }),
+});
 
 export default function CreateBlogPost() {
-    const [category, setCategory] = useState("");
-    const [grade, setGrade] = useState("");
-    const [title, setTitle] = useState("");
-    const [image, setImage] = useState<File | null>(null); // Changed to File type
-    const [content, setContent] = useState("");
-     const { toast } = useToast();
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const { toast } = useToast();
+    const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      category: "",
+      grade: "",
+      title: "",
+      image: "",
+      content: "",
+    },
+  });
 
-      const handleCreatePost = () => {
+  const { control, handleSubmit } = form;
+
+      const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    // Simulate an API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Form data submitted:", data);
+
     toast({
       title: "Blog created.",
-      description: `Blog "${title}" has been created.`,
+      description: `Blog "${data.title}" has been created.`,
     });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setImage(e.target.files[0]);
+        const file = e.target.files?.[0];
+        if (file) {
+            // setFieldValue("image", file); // if using Formik
+             form.setValue("image", URL.createObjectURL(file)); // Set the value in react-hook-form
+            setImagePreview(URL.createObjectURL(file));
         } else {
-            setImage(null);
+            form.setValue("image", "");
+            setImagePreview(null);
         }
     };
 
@@ -48,23 +86,34 @@ export default function CreateBlogPost() {
                     <CardDescription>Create a new blog post.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4">
+                 <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <Label htmlFor="category">Category</Label>
-                            <Select onValueChange={setCategory} defaultValue={category}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="School News">School News</SelectItem>
-                                    <SelectItem value="Events">Events</SelectItem>
-                                    <SelectItem value="Sports">Sports</SelectItem>
-                                </SelectContent>
-                            </Select>
+                             <Controller
+                      name="category"
+                      control={control}
+                      render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="School News">School News</SelectItem>
+                                        <SelectItem value="Events">Events</SelectItem>
+                                        <SelectItem value="Sports">Sports</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                      )}
+                    />
                         </div>
                         <div>
                             <Label htmlFor="grade">Grade</Label>
-                            <Select onValueChange={setGrade} defaultValue={grade}>
+                              <Controller
+                      name="grade"
+                      control={control}
+                      render={({ field }) => (
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select a grade" />
                                 </SelectTrigger>
@@ -74,30 +123,46 @@ export default function CreateBlogPost() {
                                     <SelectItem value="Grade 3">Grade 3</SelectItem>
                                 </SelectContent>
                             </Select>
+                      )}
+                    />
                         </div>
                     </div>
                     <div>
                         <Label htmlFor="title">Title</Label>
-                        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+                         <Controller
+                      name="title"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="title" placeholder="Post title" {...field} />
+                      )}
+                    />
                     </div>
                     <div>
                         <Label htmlFor="image">Image Upload</Label>
-                         <Input type="file" id="image" onChange={handleImageChange} />
-                          {image && (
-                            <img
-                              src={URL.createObjectURL(image)}
-                              alt="Uploaded Image"
-                              className="mt-2 w-32 h-auto"
-                            />
-                          )}
+                            <Input type="file" id="image" onChange={handleImageChange} />
+                              {imagePreview && (
+                                <img
+                                  src={imagePreview}
+                                  alt="Uploaded Image"
+                                  className="mt-2 w-32 h-auto"
+                                />
+                              )}
                     </div>
                     <div>
                         <Label htmlFor="content">Content</Label>
-                        <Textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} />
+                         <Controller
+                      name="content"
+                      control={control}
+                      render={({ field }) => (
+                        <Textarea id="content" placeholder="Post content" {...field} />
+                      )}
+                    />
                     </div>
-                     <Button onClick={handleCreatePost}>Create Post</Button>
+                     <Button type="submit">Create Post</Button>
+                    </form>
                 </CardContent>
             </Card>
         </Layout>
     );
 }
+

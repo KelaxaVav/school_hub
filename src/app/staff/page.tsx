@@ -26,6 +26,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {format} from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  gender: z.string(),
+  nic: z.string(),
+  dateOfBirth: z.date(),
+  teacherGrade: z.string(),
+});
 
 interface StaffMember {
   id: string;
@@ -111,11 +125,26 @@ const fetchStaffMembers = async (): Promise<StaffMember[]> => {
   });
 };
 
+const deleteStaffMember = async (id: string): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`Deleted staff member with id: ${id}`);
+      resolve();
+    }, 500);
+  });
+};
+
 export default function StaffPage() {
   const [loading, setLoading] = useState(true);
   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
   const router = useRouter();
+  const { toast } = useToast();
+    const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
 
+  const { handleSubmit } = form;
 
   useEffect(() => {
     const loadStaffMembers = async () => {
@@ -127,6 +156,16 @@ export default function StaffPage() {
 
     loadStaffMembers();
   }, []);
+
+  const onDelete = async (id: string) => {
+    await deleteStaffMember(id);
+    setStaffMembers(staffMembers.filter((staff) => staff.id !== id));
+    toast({
+      title: "Staff member deleted.",
+      description: "The staff member has been deleted successfully.",
+    });
+  };
+
 
   return (
     <Layout>
@@ -203,7 +242,7 @@ export default function StaffPage() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-500 text-red-50">Delete</AlertDialogAction>
+                          <AlertDialogAction className="bg-red-500 text-red-50"  onClick={() => onDelete(staff.id)}>Delete</AlertDialogAction>
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>
@@ -217,6 +256,4 @@ export default function StaffPage() {
     </Layout>
   );
 }
-
-
 

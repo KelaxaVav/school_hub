@@ -26,6 +26,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  gender: z.string(),
+  nicNumber: z.string(),
+  grade: z.string(),
+  stream: z.string(),
+});
 
 interface Student {
   id: string;
@@ -119,10 +133,26 @@ const fetchStudents = async (): Promise<Student[]> => {
   });
 };
 
+const deleteStudent = async (id: string): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`Deleted student with id: ${id}`);
+      resolve();
+    }, 500);
+  });
+};
+
 export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const router = useRouter();
+  const { toast } = useToast();
+    const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
+
+  const { handleSubmit } = form;
 
   useEffect(() => {
     const loadStudents = async () => {
@@ -134,6 +164,15 @@ export default function StudentsPage() {
 
     loadStudents();
   }, []);
+
+  const onDelete = async (id: string) => {
+    await deleteStudent(id);
+    setStudents(students.filter((student) => student.id !== id));
+    toast({
+      title: "Student deleted.",
+      description: "The student has been deleted successfully.",
+    });
+  };
 
   return (
     <Layout>
@@ -211,7 +250,7 @@ export default function StudentsPage() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-500 text-red-50">Delete</AlertDialogAction>
+                          <AlertDialogAction className="bg-red-500 text-red-50" onClick={() => onDelete(student.id)}>Delete</AlertDialogAction>
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>

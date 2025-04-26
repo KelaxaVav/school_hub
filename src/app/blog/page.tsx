@@ -24,6 +24,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const FormSchema = z.object({
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
+  }),
+  content: z.string().min(10, {
+    message: "Content must be at least 10 characters.",
+  }),
+  author: z.string().min(2, {
+    message: "Author must be at least 2 characters.",
+  }),
+  date: z.string(),
+});
 
 
 interface BlogPost {
@@ -58,32 +75,79 @@ const columns = [
 ];
 
 
-const mockBlogPosts: BlogPost[] = [
-  {
-    id: "1",
-    title: "School Trip to the Museum",
-    content: "Today, students visited the local museum...",
-    author: "John Doe",
-    date: "2024-08-01",
-  },
-  {
-    id: "2",
-    title: "New Science Lab Opened",
-    content: "We are excited to announce the opening of our new science lab...",
-    author: "Jane Smith",
-    date: "2024-08-05",
-  },
-];
+const fetchBlogPosts = async (): Promise<BlogPost[]> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const mockBlogPosts: BlogPost[] = [
+        {
+          id: "1",
+          title: "School Trip to the Museum",
+          content: "Today, students visited the local museum...",
+          author: "John Doe",
+          date: "2024-08-01",
+        },
+        {
+          id: "2",
+          title: "New Science Lab Opened",
+          content: "We are excited to announce the opening of our new science lab...",
+          author: "Jane Smith",
+          date: "2024-08-05",
+        },
+        {
+          id: "3",
+          title: "Coding Club Starts New Season",
+          content: "The coding club is back with exciting projects...",
+          author: "Emily White",
+          date: "2024-08-10",
+        },
+      ];
+      resolve(mockBlogPosts);
+    }, 500);
+  });
+};
+
+const deleteBlogPost = async (id: string): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`Deleted blog post with id: ${id}`);
+      resolve();
+    }, 500);
+  });
+};
+
 
 export default function BlogPage() {
   const [loading, setLoading] = useState(true);
+   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const router = useRouter();
+  const { toast } = useToast();
+   const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
+
+  const { handleSubmit } = form;
 
   useEffect(() => {
-    setTimeout(() => {
+     const loadBlogPosts = async () => {
+      setLoading(true);
+      const blogData = await fetchBlogPosts();
+      setBlogPosts(blogData);
       setLoading(false);
-    }, 500);
+    };
+
+    loadBlogPosts();
   }, []);
+
+  const onDelete = async (id: string) => {
+    await deleteBlogPost(id);
+    setBlogPosts(blogPosts.filter((post) => post.id !== id));
+    toast({
+      title: "Blog post deleted.",
+      description: "The blog post has been deleted successfully.",
+    });
+  };
 
   return (
     <Layout>
@@ -126,7 +190,7 @@ export default function BlogPage() {
                   ))}
                 </>
               ) : (
-                mockBlogPosts.map((post, index) => (
+                blogPosts.map((post, index) => (
                   <TableRow key={post.id}>
                      <TableCell>{index + 1}</TableCell>
                     <TableCell>{post.title}</TableCell>
@@ -151,7 +215,7 @@ export default function BlogPage() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-500 text-red-50">Delete</AlertDialogAction>
+                          <AlertDialogAction className="bg-red-500 text-red-50" onClick={() => onDelete(post.id)}>Delete</AlertDialogAction>
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>

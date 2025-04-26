@@ -89,34 +89,63 @@ const columns = [
 ];
 
 
-const mockInventoryItems: InventoryItem[] = [
-  {
-    id: "1",
-    name: "Notebook",
-    bookNo: "NB-001",
-    pageNo: 120,
-    quantity: 200,
-  },
-  {
-    id: "2",
-    name: "Pen",
-    bookNo: "PN-002",
-    pageNo: 1,
-    quantity: 500,
-  },
-  {
-    id: "3",
-    name: "Chair",
-    bookNo: "CH-003",
-    pageNo: 1,
-    quantity: 100,
-  },
-];
+const fetchInventoryItems = async (): Promise<InventoryItem[]> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const mockInventoryItems: InventoryItem[] = [
+        {
+          id: "1",
+          name: "Notebook",
+          bookNo: "NB-001",
+          pageNo: 120,
+          quantity: 200,
+        },
+        {
+          id: "2",
+          name: "Pen",
+          bookNo: "PN-002",
+          pageNo: 1,
+          quantity: 500,
+        },
+        {
+          id: "3",
+          name: "Chair",
+          bookNo: "CH-003",
+          pageNo: 1,
+          quantity: 100,
+        },
+      ];
+      resolve(mockInventoryItems);
+    }, 500);
+  });
+};
+
+const createInventoryItem = async (data: z.infer<typeof FormSchema>): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Inventory item created:", data);
+      resolve();
+    }, 500);
+  });
+};
+
+const deleteInventoryItem = async (id: string): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`Deleted inventory item with id: ${id}`);
+      resolve();
+    }, 500);
+  });
+};
 
 export default function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -129,22 +158,34 @@ export default function InventoryPage() {
 
   const { control, handleSubmit } = form;
 
-  useEffect(() => {
-    setTimeout(() => {
+    useEffect(() => {
+    const loadInventoryItems = async () => {
+      setLoading(true);
+      const inventoryData = await fetchInventoryItems();
+      setInventoryItems(inventoryData);
       setLoading(false);
-    }, 500);
+    };
+
+    loadInventoryItems();
   }, []);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // Simulate an API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    console.log("Form data submitted:", data);
+    await createInventoryItem(data);
 
     setOpen(false);
+    setInventoryItems([...inventoryItems, { id: Math.random().toString(), ...data }]); // Optimistically update the UI
     toast({
       title: "Item added.",
       description: `Item "${data.name}" has been created.`,
+    });
+  };
+
+  const onDelete = async (id: string) => {
+    await deleteInventoryItem(id);
+    setInventoryItems(inventoryItems.filter((item) => item.id !== id));
+    toast({
+      title: "Inventory item deleted.",
+      description: "The inventory item has been deleted successfully.",
     });
   };
 
@@ -256,7 +297,7 @@ export default function InventoryPage() {
                   ))}
                 </>
               ) : (
-                mockInventoryItems.map((item, index) => (
+                inventoryItems.map((item, index) => (
                   <TableRow key={item.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{item.name}</TableCell>
@@ -282,7 +323,7 @@ export default function InventoryPage() {
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-500 text-red-50">Delete</AlertDialogAction>
+                          <AlertDialogAction className="bg-red-500 text-red-50"  onClick={() => onDelete(item.id)}>Delete</AlertDialogAction>
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>
@@ -296,3 +337,4 @@ export default function InventoryPage() {
     </Layout>
   );
 }
+

@@ -67,6 +67,16 @@ const FormSchema = z.object({
   ).optional(),
 });
 
+const createStaff = async (data: z.infer<typeof FormSchema>): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("Staff data submitted:", data);
+      resolve();
+    }, 1000);
+  });
+};
+
 export default function CreateStaffPage() {
 
   const { toast } = useToast();
@@ -109,10 +119,7 @@ export default function CreateStaffPage() {
   const { control, handleSubmit } = form;
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // Simulate an API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    console.log("Form data submitted:", data);
+    await createStaff(data);
 
     toast({
       title: "Staff created.",
@@ -553,3 +560,4 @@ export default function CreateStaffPage() {
     </Layout>
   );
 }
+

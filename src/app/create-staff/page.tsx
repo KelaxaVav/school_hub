@@ -23,6 +23,7 @@ import { Layout } from "@/components/layout/layout";
 import { useForm, Controller } from "react-hook-form";
 import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
+import Select from 'react-select';
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -73,6 +74,10 @@ export default function CreateStaffPage() {
     { school: string; from: Date | undefined; to: Date | undefined }[]
   >([]);
     const subjects = ["Math", "Science", "English", "History"]; // Replace with actual subject data
+      const subjectOptions = subjects.map(subject => ({
+    value: subject,
+    label: subject,
+  }));
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -514,31 +519,29 @@ export default function CreateStaffPage() {
                         Add School
                       </Button>
                     </div>
-                     <div>
-                       <Label>Subjects</Label>
-                      {subjects.map((subject, index) => (
-                        <div key={subject} className="flex items-center space-x-2">
-                          <Controller
-                            name="subjects"
-                            control={control}
-                            render={({ field }) => (
-                              <Checkbox
-                                checked={field.value?.includes(subject)}
-                                onCheckedChange={(checked) => {
-                                  if (checked) {
-                                    field.onChange([...(field.value || []), subject]);
-                                  } else {
-                                    field.onChange(
-                                      (field.value || []).filter((val: string) => val !== subject)
-                                    );
-                                  }
-                                }}
-                              />
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="subjects" className="text-right">
+                        Subjects
+                      </Label>
+                      <Controller
+                        name="subjects"
+                        control={control}
+                        render={({ field }) => (
+                           <Select
+                            isMulti
+                            options={subjectOptions}
+                            className="col-span-3"
+                            onChange={(selectedOptions) => {
+                              field.onChange(
+                                selectedOptions ? selectedOptions.map((option) => option.value) : []
+                              );
+                            }}
+                            value={subjectOptions.filter((option) =>
+                              (field.value || []).includes(option.value)
                             )}
                           />
-                          <Label htmlFor={subject}>{subject}</Label>
-                        </div>
-                      ))}
+                        )}
+                      />
                     </div>
                 </div>
               </div>
@@ -550,4 +553,3 @@ export default function CreateStaffPage() {
     </Layout>
   );
 }
-

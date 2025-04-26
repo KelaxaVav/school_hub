@@ -24,6 +24,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Student {
   id: string;
@@ -81,6 +83,7 @@ export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
@@ -103,49 +106,52 @@ export default function StudentsPage() {
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle>Students</CardTitle>
           <CardDescription>Manage student records.</CardDescription>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <Plus className="mr-2 h-4 w-4" /> Add Student
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add Student</DialogTitle>
-                <DialogDescription>
-                  Add a new student to the system.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input id="name" defaultValue="" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email" className="text-right">
-                    Email
-                  </Label>
-                  <Input id="email" defaultValue="" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="age" className="text-right">
-                    Age
-                  </Label>
-                  <Input id="age" defaultValue="" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="grade" className="text-right">
-                    Grade
-                  </Label>
-                  <Input id="grade" defaultValue="" className="col-span-3" />
-                </div>
-              </div>
-              {/*<Input type="text" placeholder="Student ID" />*/}
-              <Button type="submit" onClick={handleAddStudent}>Add</Button>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" onClick={() => router.push("/create-student")}>
+            <Plus className="mr-2 h-4 w-4" /> Add Student
+          </Button>
+          {/*<Dialog open={open} onOpenChange={setOpen}>*/}
+          {/*  <DialogTrigger asChild>*/}
+          {/*    <Button variant="outline">*/}
+          {/*      <Plus className="mr-2 h-4 w-4" /> Add Student*/}
+          {/*    </Button>*/}
+          {/*  </DialogTrigger>*/}
+          {/*  <DialogContent className="sm:max-w-[425px]">*/}
+          {/*    <DialogHeader>*/}
+          {/*      <DialogTitle>Add Student</DialogTitle>*/}
+          {/*      <DialogDescription>*/}
+          {/*        Add a new student to the system.*/}
+          {/*      </DialogDescription>*/}
+          {/*    </DialogHeader>*/}
+          {/*    <div className="grid gap-4 py-4">*/}
+          {/*      <div className="grid grid-cols-4 items-center gap-4">*/}
+          {/*        <Label htmlFor="name" className="text-right">*/}
+          {/*          Name*/}
+          {/*        </Label>*/}
+          {/*        <Input id="name" defaultValue="" className="col-span-3" />*/}
+          {/*      </div>*/}
+          {/*      <div className="grid grid-cols-4 items-center gap-4">*/}
+          {/*        <Label htmlFor="email" className="text-right">*/}
+          {/*          Email*/}
+          {/*        </Label>*/}
+          {/*        <Input id="email" defaultValue="" className="col-span-3" />*/}
+          {/*      </div>*/}
+          {/*      <div className="grid grid-cols-4 items-center gap-4">*/}
+          {/*        <Label htmlFor="age" className="text-right">*/}
+          {/*          Age*/}
+          {/*        </Label>*/}
+          {/*        <Input id="age" defaultValue="" className="col-span-3" />*/}
+          {/*      </div>*/}
+          {/*      <div className="grid grid-cols-4 items-center gap-4">*/}
+          {/*        <Label htmlFor="grade" className="text-right">*/}
+          {/*          Grade*/}
+          {/*        </Label>*/}
+          {/*        <Input id="grade" defaultValue="" className="col-span-3" />*/}
+          {/*      </div>*/}
+          {/*    </div>*/}
+          {/*    /!*<Input type="text" placeholder="Student ID" />*!/*/}
+          {/*    <Button type="submit" onClick={handleAddStudent}>Add</Button>*/}
+          {/*  </DialogContent>*/}
+          {/*</Dialog>*/}
         </CardHeader>
         <CardContent>
           <Table>

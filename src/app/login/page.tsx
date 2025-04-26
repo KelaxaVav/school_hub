@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { Layout } from "@/components/layout/layout";
 import { useForm, Controller } from "react-hook-form";
 import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,6 +50,8 @@ export default function LoginPage() {
         title: "Login successful.",
         description: "Redirecting to dashboard...",
       });
+
+      localStorage.setItem("token", "loggedIn");
 
       router.push("/");
     } else {

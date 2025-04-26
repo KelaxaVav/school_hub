@@ -77,18 +77,20 @@ interface LayoutProps {
 export function Layout({ children, hideNavigation }: LayoutProps) {
   const pathname = usePathname();
     const router = useRouter();
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogout = () => {
+        localStorage.removeItem("token");
         setIsLoggedIn(false);
         router.push("/login");
     };
 
     useEffect(() => {
         const checkLoginStatus = () => {
-            // Replace with actual login status check
             const token = localStorage.getItem("token");
-            if (!token) {
+            if (token) {
+                setIsLoggedIn(true);
+            } else {
                 setIsLoggedIn(false);
                 router.push("/login");
             }
@@ -96,6 +98,10 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
 
         checkLoginStatus();
     }, [router]);
+
+    if (!isLoggedIn) {
+        return null;
+    }
 
   return (
     <SidebarProvider>
@@ -145,5 +151,4 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     </SidebarProvider>
   );
 }
-
 

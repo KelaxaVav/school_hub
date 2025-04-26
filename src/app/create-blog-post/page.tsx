@@ -14,17 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { EditorContent, EditorProvider } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import { useEditor } from "@tiptap/react";
-import Image from '@tiptap/extension-image'
-
-const placeholder = Placeholder.configure({
-    placeholder: ({ node, view, getPos }) => {
-        return "Write something…";
-    },
-});
+import { Textarea } from "@/components/ui/textarea";
 
 export default function CreateBlogPost() {
     const [category, setCategory] = useState("");
@@ -33,14 +23,6 @@ export default function CreateBlogPost() {
     const [image, setImage] = useState<File | null>(null); // Changed to File type
     const [content, setContent] = useState("");
      const { toast } = useToast();
-
-      const editor = useEditor({
-        extensions: [StarterKit, placeholder,Image],
-        content: content,
-        onUpdate: ({ editor }) => {
-            setContent(editor.getHTML());
-        },
-    });
 
       const handleCreatePost = () => {
     toast({
@@ -111,9 +93,7 @@ export default function CreateBlogPost() {
                     </div>
                     <div>
                         <Label htmlFor="content">Content</Label>
-                        <EditorProvider editor={editor}>
-                            <EditorContent editor={editor} />
-                        </EditorProvider>
+                        <Textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} />
                     </div>
                      <Button onClick={handleCreatePost}>Create Post</Button>
                 </CardContent>
@@ -121,4 +101,3 @@ export default function CreateBlogPost() {
         </Layout>
     );
 }
-

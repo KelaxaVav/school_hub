@@ -63,6 +63,7 @@ export default function LoginPage() {
 
         localStorage.setItem("token", result.token);
 
+        // Use router.push inside a useEffect or a callback
         router.push("/");
       } else {
         toast({

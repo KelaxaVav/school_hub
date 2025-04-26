@@ -31,7 +31,8 @@ export default function SettingsPage() {
   return (
     <Layout>
       <div className="grid gap-4">
-        <Card className="col-span-4 lg:col-span-12">
+        {/* Changed col-span-4 lg:col-span-12 to w-1/4 */}
+        <Card className="w-1/4">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Stream Settings</CardTitle>
             <CardDescription>Manage your stream settings.</CardDescription>
@@ -57,3 +58,4 @@ export default function SettingsPage() {
     </Layout>
   );
 }
+

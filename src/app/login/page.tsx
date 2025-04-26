@@ -63,7 +63,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Layout hideNavigation={true}>
+    
       <div className="container py-4 h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-0 pb-2">
@@ -103,6 +103,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </div>
-    </Layout>
+    
   );
 }
+

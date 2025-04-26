@@ -44,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/features/loadingSlice";
 import { toast } from 'react-toastify';
 
@@ -89,9 +89,13 @@ const columns = [
   },
 ];
 
-const fetchRoles = async (): Promise<Role[]> => {
+const fetchRoles = async (token: string | null): Promise<Role[]> => {
   try {
-    const response = await fetch('https://api.puthukkulammv.com/api/roles');
+    const response = await fetch('https://api.puthukkulammv.com/api/roles', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await response.json();
     if (data.status) {
       return data.data;
@@ -105,9 +109,13 @@ const fetchRoles = async (): Promise<Role[]> => {
   }
 };
 
-const fetchPermissions = async (): Promise<Permission[]> => {
+const fetchPermissions = async (token: string | null): Promise<Permission[]> => {
   try {
-    const response = await fetch('https://api.puthukkulammv.com/api/permissions');
+    const response = await fetch('https://api.puthukkulammv.com/api/permissions', {
+       headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await response.json();
     if (data.status) {
       return data.data;
@@ -152,26 +160,27 @@ export default function RolesPermissionsPage() {
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const { toast } = useToast();
   const dispatch = useDispatch();
+  const token = useSelector((state: any) => state.user.token);
 
 
   useEffect(() => {
     const loadRoles = async () => {
       setLoadingRoles(true);
-      const rolesData = await fetchRoles();
+      const rolesData = await fetchRoles(token);
       setRoles(rolesData);
       setLoadingRoles(false);
     };
 
     const loadPermissions = async () => {
       setLoadingPermissions(true);
-      const permissionsData = await fetchPermissions();
+      const permissionsData = await fetchPermissions(token);
       setPermissions(permissionsData);
       setLoadingPermissions(false);
     };
 
     loadRoles();
     loadPermissions();
-  }, []);
+  }, [token]);
 
     useEffect(() => {
     if (selectedRole) {

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Layout } from "@/components/layout/layout";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 const metrics = [
   {
@@ -26,12 +27,20 @@ const metrics = [
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-  }, []);
+    // Simulate checking if user is logged in
+    const isLoggedIn = true; // Replace with your actual authentication check
+
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
+    }
+  }, [router]);
 
   return (
     <Layout>
@@ -51,4 +60,3 @@ export default function Home() {
     </Layout>
   );
 }
-

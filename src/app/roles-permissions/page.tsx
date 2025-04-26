@@ -92,7 +92,7 @@ const columns = [
   },
 ];
 
-const customFetch = async (url: string, options: RequestInit = {}) => {
+const customFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
   // Check if the URL is the login route
   if (url.includes('/api/auth/login')) {
     // If it's the login route, don't add the token

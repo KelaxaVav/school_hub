@@ -24,7 +24,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { Home, Book, Users, User, Package, Pencil } from "lucide-react";
+import { Home } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
@@ -34,26 +34,6 @@ const routes = [
     label: "Dashboard",
     href: "/",
     icon: Home,
-  },
-  {
-    label: "Students",
-    href: "/students",
-    icon: Users,
-  },
-  {
-    label: "Staff",
-    href: "/staff",
-    icon: User,
-  },
-  {
-    label: "Inventory",
-    href: "/inventory",
-    icon: Package,
-  },
-  {
-    label: "Blog",
-    href: "/blog",
-    icon: Pencil,
   },
 ];
 
@@ -110,3 +90,4 @@ export function Layout({ children }: LayoutProps) {
     </SidebarProvider>
   );
 }
+

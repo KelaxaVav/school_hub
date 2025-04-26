@@ -13,6 +13,18 @@ import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Table
 import {Layout} from "@/components/layout/layout";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Edit, Trash } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 
 interface BlogPost {
   id: string;
@@ -24,6 +36,10 @@ interface BlogPost {
 
 const columns = [
   {
+    id: "rowNumber",
+    label: "#",
+  },
+  {
     id: "title",
     label: "Title",
   },
@@ -34,6 +50,10 @@ const columns = [
   {
     id: "date",
     label: "Date",
+  },
+  {
+    id: "actions",
+    label: "Actions",
   },
 ];
 
@@ -89,20 +109,52 @@ export default function BlogPage() {
                 <>
                   {Array.from({length: 3}).map((_, i) => (
                     <TableRow key={i}>
-                      {columns.map((column) => (
-                        <TableCell key={column.id}>
-                          <Skeleton className="h-4 w-[80%]" />
-                        </TableCell>
-                      ))}
+                       <TableCell>{i + 1}</TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[80%]" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-[60%]" />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </>
               ) : (
-                mockBlogPosts.map((post) => (
+                mockBlogPosts.map((post, index) => (
                   <TableRow key={post.id}>
+                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{post.title}</TableCell>
                     <TableCell>{post.author}</TableCell>
                     <TableCell>{post.date}</TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="icon">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="text-red-500">
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete the blog post
+                              and remove their data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction className="bg-red-500 text-red-50">Delete</AlertDialogAction>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -113,3 +165,4 @@ export default function BlogPage() {
     </Layout>
   );
 }
+

@@ -69,6 +69,11 @@ const routes = [
     href: "/settings",
     icon: Settings,
   },
+     {
+    label: "Roles & Permissions",
+    href: "/roles-permissions",
+    icon: Shield,
+  },
 ];
 
 interface LayoutProps {
@@ -155,5 +160,3 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     </SidebarProvider>
   );
 }
-
-

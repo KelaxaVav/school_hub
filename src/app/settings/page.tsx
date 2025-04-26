@@ -55,8 +55,8 @@ export default function SettingsPage() {
 
   return (
     <Layout>
-      <div className="flex gap-4">
-        <Card className="w-1/4">
+      <div className="cards-container">
+        <Card>
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Stream Settings</CardTitle>
             <CardDescription>Manage your stream settings.</CardDescription>
@@ -79,7 +79,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="w-1/4">
+        <Card>
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>School Settings</CardTitle>
             <CardDescription>Manage your school settings.</CardDescription>
@@ -102,7 +102,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-         <Card className="w-1/4">
+         <Card>
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Subject Settings</CardTitle>
             <CardDescription>Manage your Subject settings.</CardDescription>
@@ -125,7 +125,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-         <Card className="w-1/4">
+         <Card>
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Category Settings</CardTitle>
             <CardDescription>Manage your Category settings.</CardDescription>
@@ -151,4 +151,4 @@ export default function SettingsPage() {
     </Layout>
   );
 }
-
+/* src/app/settings/page.tsx */

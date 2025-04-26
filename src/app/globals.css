@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -80,4 +81,21 @@ body {
   }
 }
 
+.flex-responsive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
 
+.flex-responsive > * {
+  flex: 1 1 300px; /* Adjust the 300px value as needed */
+  min-width: 300px;
+}
+
+/* Responsive card layout */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust minmax value as needed */
+  gap: 16px;
+}
+/* src/app/globals.css */

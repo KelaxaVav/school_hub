@@ -20,40 +20,91 @@ import { format } from "date-fns";
 import { SchoolSelect } from "./components/school-select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Layout } from "@/components/layout/layout";
+import { useForm, Controller } from "react-hook-form";
+import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  gender: z.string(),
+  image: z.string().url({
+    message: "Please enter a valid image URL.",
+  }),
+  fatherName: z.string(),
+  motherName: z.string(),
+  nicNumber: z.string(),
+  indexNo: z.string(),
+  dateOfBirth: z.date(),
+  addressNo: z.string(),
+  addressStreet: z.string(),
+  addressTown: z.string(),
+  addressCity: z.string(),
+  admissionDate: z.date(),
+  leavingDate: z.date().optional(),
+  grade: z.string(),
+  stream: z.string(),
+  location: z.string(),
+  previousSchools: z.array(
+    z.object({
+      school: z.string(),
+      from: z.date(),
+      to: z.date(),
+    })
+  ).optional(),
+});
 
 export default function CreateStudentPage() {
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("");
-  const [image, setImage] = useState("");
-  const [fatherName, setFatherName] = useState("");
-  const [motherName, setMotherName] = useState("");
-  const [nicNumber, setNicNumber] = useState("");
-  const [indexNo, setIndexNo] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>(undefined);
-  const [addressNo, setAddressNo] = useState("");
-  const [addressStreet, setAddressStreet] = useState("");
-  const [addressTown, setAddressTown] = useState("");
-  const [addressCity, setAddressCity] = useState("");
-  const [admissionDate, setAdmissionDate] = useState<Date | undefined>(undefined);
-  const [leavingDate, setLeavingDate] = useState<Date | undefined>(undefined);
-  const [grade, setGrade] = useState("");
-  const [stream, setStream] = useState("");
-  const [location, setLocation] = useState("");
+
+  const { toast } = useToast();
   const [previousSchools, setPreviousSchools] = useState<
     { school: string; from: Date | undefined; to: Date | undefined }[]
   >([]);
 
-  const { toast } = useToast();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      username: "",
+      password: "",
+      email: "",
+      gender: "",
+      image: "",
+      fatherName: "",
+      motherName: "",
+      nicNumber: "",
+      indexNo: "",
+      dateOfBirth: new Date(),
+      addressNo: "",
+      addressStreet: "",
+      addressTown: "",
+      addressCity: "",
+      admissionDate: new Date(),
+      leavingDate: undefined,
+      grade: "",
+      stream: "",
+      location: "",
+      previousSchools: [],
+    },
+  });
 
-  const handleSubmit = () => {
+  const { control, handleSubmit } = form;
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
     toast({
       title: "Student created.",
-      description: `Student "${name}" has been created.`,
+      description: `Student "${data.name}" has been created.`,
     });
-    // Handle form submission logic here
   };
 
   const handleAddSchool = () => {
@@ -88,79 +139,79 @@ export default function CreateStudentPage() {
             <CardDescription>Enter student details to create a new student.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex">
               <div className="w-1/2 pr-2">
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="name" className="text-right">
                       Name
                     </Label>
-                    <Input
-                      type="text"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="name"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="name" placeholder="Student Name" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="fatherName" className="text-right">
                       Father's Name
                     </Label>
-                    <Input
-                      type="text"
-                      id="fatherName"
-                      value={fatherName}
-                      onChange={(e) => setFatherName(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="fatherName"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="fatherName" placeholder="Father Name" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="motherName" className="text-right">
                       Mother's Name
                     </Label>
-                    <Input
-                      type="text"
-                      id="motherName"
-                      value={motherName}
-                      onChange={(e) => setMotherName(e.target.value)}
-                      className="col-span-3"
+                    <Controller
+                      name="motherName"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="motherName" placeholder="Mother Name" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="addressNo" className="text-right">
                       Address No
                     </Label>
-                    <Input
-                      type="text"
-                      id="addressNo"
-                      value={addressNo}
-                      onChange={(e) => setAddressNo(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="addressNo"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="addressNo" placeholder="Address No" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="addressStreet" className="text-right">
                       Address Street
                     </Label>
-                    <Input
-                      type="text"
-                      id="addressStreet"
-                      value={addressStreet}
-                      onChange={(e) => setAddressStreet(e.target.value)}
-                      className="col-span-3"
+                    <Controller
+                      name="addressStreet"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="addressStreet" placeholder="Address Street" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="addressTown" className="text-right">
                       Address Town
                     </Label>
-                    <Input
-                      type="text"
-                      id="addressTown"
-                      value={addressTown}
-                      onChange={(e) => setAddressTown(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="addressTown"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="addressTown" placeholder="Address Town" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                 </div>
@@ -171,92 +222,92 @@ export default function CreateStudentPage() {
                     <Label htmlFor="username" className="text-right">
                       Username
                     </Label>
-                    <Input
-                      type="text"
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="username"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="username" placeholder="Username" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="password" className="text-right">
                       Password
                     </Label>
-                    <Input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="password"
+                      control={control}
+                      render={({ field }) => (
+                        <Input type="password" id="password" placeholder="Password" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="nicNumber" className="text-right">
                       NIC Number
                     </Label>
-                    <Input
-                      type="text"
-                      id="nicNumber"
-                      value={nicNumber}
-                      onChange={(e) => setNicNumber(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="nicNumber"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="nicNumber" placeholder="NIC Number" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                    <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="email" className="text-right">
                       Email
                     </Label>
-                    <Input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="email"
+                      control={control}
+                      render={({ field }) => (
+                        <Input type="email" id="email" placeholder="Email" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="gender" className="text-right">
                       Gender
                     </Label>
-                    <Input
-                      type="text"
-                      id="gender"
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="gender"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="gender" placeholder="Gender" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                    <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="indexNo" className="text-right">
                       Index No
                     </Label>
-                    <Input
-                      type="text"
-                      id="indexNo"
-                      value={indexNo}
-                      onChange={(e) => setIndexNo(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="indexNo"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="indexNo" placeholder="Index No" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                  
                 </div>
               </div>
-            </div>
+            
 
-            <div className="flex">
+            
               <div className="w-1/2 pr-2">
                  <div className="grid gap-4 py-4">
                    <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="image" className="text-right">
                       Image URL
                     </Label>
-                    <Input
-                      type="text"
-                      id="image"
-                      value={image}
-                      onChange={(e) => setImage(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="image"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="image" placeholder="Image URL" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                   
@@ -265,12 +316,12 @@ export default function CreateStudentPage() {
                     <Label htmlFor="addressCity" className="text-right">
                       Address City
                     </Label>
-                    <Input
-                      type="text"
-                      id="addressCity"
-                      value={addressCity}
-                      onChange={(e) => setAddressCity(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="addressCity"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="addressCity" placeholder="Address City" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
 
@@ -282,120 +333,138 @@ export default function CreateStudentPage() {
                     <Label htmlFor="dateOfBirth" className="text-right">
                       Date of Birth
                     </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !dateOfBirth && "text-muted-foreground"
-                          )}
-                        >
-                          {dateOfBirth ? (
-                            format(dateOfBirth, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={dateOfBirth}
-                          onSelect={setDateOfBirth}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                     <Controller
+                      name="dateOfBirth"
+                      control={control}
+                      render={({ field }) => (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[240px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
                   </div>
 
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="admissionDate" className="text-right">
                       Admission Date
                     </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !admissionDate && "text-muted-foreground"
-                          )}
-                        >
-                          {admissionDate ? (
-                            format(admissionDate, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={admissionDate}
-                          onSelect={setAdmissionDate}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <Controller
+                      name="admissionDate"
+                      control={control}
+                      render={({ field }) => (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[240px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
                   </div>
 
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="leavingDate" className="text-right">
                       Leaving Date
                     </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !leavingDate && "text-muted-foreground"
-                          )}
-                        >
-                          {leavingDate ? (
-                            format(leavingDate, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={leavingDate}
-                          onSelect={setLeavingDate}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <Controller
+                      name="leavingDate"
+                      control={control}
+                      render={({ field }) => (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[240px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) =>
+                                date > new Date() || date < new Date("1900-01-01")
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
                   </div>
                  </div>
               </div>
-            </div>
+            
 
-            <div className="flex">
+            
               <div className="w-1/2 pr-2">
                  <div className="grid gap-4 py-4">
                    <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="grade" className="text-right">
                       Grade
                     </Label>
-                    <Input
-                      type="text"
-                      id="grade"
-                      value={grade}
-                      onChange={(e) => setGrade(e.target.value)}
-                      className="col-span-3"
+                     <Controller
+                      name="grade"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="grade" placeholder="Grade" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                  </div>
@@ -406,31 +475,31 @@ export default function CreateStudentPage() {
                     <Label htmlFor="stream" className="text-right">
                       Stream
                     </Label>
-                    <Input
-                      type="text"
-                      id="stream"
-                      value={stream}
-                      onChange={(e) => setStream(e.target.value)}
-                      className="col-span-3"
+                    <Controller
+                      name="stream"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="stream" placeholder="Stream" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                  </div>
               </div>
-            </div>
+           
 
-            <div className="flex">
+           
               <div className="w-1/2 pr-2">
                  <div className="grid gap-4 py-4">
                    <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="location" className="text-right">
                       Location
                     </Label>
-                    <Input
-                      type="text"
-                      id="location"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="col-span-3"
+                    <Controller
+                      name="location"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="location" placeholder="Location" className="col-span-3" {...field} />
+                      )}
                     />
                   </div>
                  </div>
@@ -525,12 +594,14 @@ export default function CreateStudentPage() {
                     </div>
                  </div>
               </div>
-            </div>
-            <Button onClick={handleSubmit}>Create Student</Button>
+           
+             
+                <Button type="submit" className="ml-auto">Create Student</Button>
+             
+            </form>
           </CardContent>
         </Card>
       </div>
     </Layout>
   );
 }
-

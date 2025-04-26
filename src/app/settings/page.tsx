@@ -37,7 +37,7 @@ export default function SettingsPage() {
 
   return (
     <Layout>
-      <div className="grid gap-4">
+      <div className="flex gap-4">
         <Card className="w-1/4">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Stream Settings</CardTitle>
@@ -87,3 +87,4 @@ export default function SettingsPage() {
     </Layout>
   );
 }
+

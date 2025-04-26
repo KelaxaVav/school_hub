@@ -34,6 +34,24 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useForm, Controller } from "react-hook-form";
+import {z} from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  bookNo: z.string().min(2, {
+    message: "Book No must be at least 2 characters.",
+  }),
+  pageNo: z.number().min(1, {
+    message: "Page No must be greater than 0.",
+  }),
+  quantity: z.number().min(1, {
+    message: "Quantity must be greater than 0.",
+  }),
+});
 
 interface InventoryItem {
   id: string;
@@ -99,6 +117,17 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      bookNo: "",
+      pageNo: 1,
+      quantity: 1,
+    },
+  });
+
+  const { control, handleSubmit } = form;
 
   useEffect(() => {
     setTimeout(() => {
@@ -106,11 +135,16 @@ export default function InventoryPage() {
     }, 500);
   }, []);
 
-  const handleAddItem = () => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    // Simulate an API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Form data submitted:", data);
+
     setOpen(false);
     toast({
       title: "Item added.",
-      description: "Your item has been added to the inventory.",
+      description: `Item "${data.name}" has been created.`,
     });
   };
 
@@ -134,33 +168,57 @@ export default function InventoryPage() {
                   Add a new item to the inventory.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
+               <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="name" className="text-right">
                     Name
                   </Label>
-                  <Input id="name" defaultValue="" className="col-span-3" />
+                   <Controller
+                      name="name"
+                      control={form.control}
+                      render={({ field }) => (
+                         <Input id="name" placeholder="Item Name" className="col-span-3" {...field} />
+                      )}
+                    />
                 </div>
                  <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="bookNo" className="text-right">
                     Book No
                   </Label>
-                  <Input id="bookNo" defaultValue="" className="col-span-3" />
+                   <Controller
+                      name="bookNo"
+                      control={form.control}
+                      render={({ field }) => (
+                         <Input id="bookNo" placeholder="Book No" className="col-span-3" {...field} />
+                      )}
+                    />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="pageNo" className="text-right">
                     Page No
                   </Label>
-                  <Input id="pageNo" defaultValue="" className="col-span-3" />
+                   <Controller
+                      name="pageNo"
+                      control={form.control}
+                      render={({ field }) => (
+                         <Input id="pageNo" placeholder="Page No" type="number" className="col-span-3" {...field} />
+                      )}
+                    />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="quantity" className="text-right">
                     Quantity
                   </Label>
-                  <Input id="quantity" defaultValue="" className="col-span-3" />
+                   <Controller
+                      name="quantity"
+                      control={form.control}
+                      render={({ field }) => (
+                         <Input id="quantity" placeholder="Quantity" type="number" className="col-span-3" {...field} />
+                      )}
+                    />
                 </div>
-              </div>
-              <Button type="submit" onClick={handleAddItem}>Add</Button>
+                 <Button type="submit">Add</Button>
+              </form>
             </DialogContent>
           </Dialog>
         </CardHeader>
@@ -238,4 +296,3 @@ export default function InventoryPage() {
     </Layout>
   );
 }
-

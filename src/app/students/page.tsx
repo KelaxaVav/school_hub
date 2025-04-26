@@ -78,47 +78,61 @@ const columns = [
 ];
 
 
-const mockStudents: Student[] = [
-  {
-    id: "1",
-    image: "https://picsum.photos/50/50",
-    indexNo: "12345",
-    name: "John Doe",
-    gender: "Male",
-    nicNumber: "123456789V",
-    grade: "10th",
-    stream: "Science",
-  },
-  {
-    id: "2",
-    image: "https://picsum.photos/50/50",
-    indexNo: "67890",
-    name: "Jane Smith",
-    gender: "Female",
-    nicNumber: "987654321V",
-    grade: "11th",
-    stream: "Commerce",
-  },
-  {
-    id: "3",
-   image: "https://picsum.photos/50/50",
-    indexNo: "13579",
-    name: "Alice Johnson",
-    gender: "Female",
-    nicNumber: "112233445V",
-    grade: "9th",
-    stream: "Arts",
-  },
-];
+const fetchStudents = async (): Promise<Student[]> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const mockStudents: Student[] = [
+        {
+          id: "1",
+          image: "https://picsum.photos/50/50",
+          indexNo: "12345",
+          name: "John Doe",
+          gender: "Male",
+          nicNumber: "123456789V",
+          grade: "10th",
+          stream: "Science",
+        },
+        {
+          id: "2",
+          image: "https://picsum.photos/50/50",
+          indexNo: "67890",
+          name: "Jane Smith",
+          gender: "Female",
+          nicNumber: "987654321V",
+          grade: "11th",
+          stream: "Commerce",
+        },
+        {
+          id: "3",
+         image: "https://picsum.photos/50/50",
+          indexNo: "13579",
+          name: "Alice Johnson",
+          gender: "Female",
+          nicNumber: "112233445V",
+          grade: "9th",
+          stream: "Arts",
+        },
+      ];
+      resolve(mockStudents);
+    }, 500);
+  });
+};
 
 export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
+  const [students, setStudents] = useState<Student[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
+    const loadStudents = async () => {
+      setLoading(true);
+      const studentData = await fetchStudents();
+      setStudents(studentData);
       setLoading(false);
-    }, 500);
+    };
+
+    loadStudents();
   }, []);
 
   return (
@@ -163,7 +177,7 @@ export default function StudentsPage() {
                   ))}
                 </>
               ) : (
-                mockStudents.map((student, index) => (
+                students.map((student, index) => (
                   <TableRow key={student.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>

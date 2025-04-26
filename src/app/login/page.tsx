@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -30,6 +31,7 @@ export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -41,10 +43,18 @@ export default function LoginPage() {
 
   const { control, handleSubmit } = form;
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      router.push("/"); // Redirect to dashboard if already logged in
+    }
+  }, [router]);
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
 
-      try {
+    try {
       const response = await fetch('https://api.puthukkulammv.com/api/auth/login', {
         method: 'POST',
         headers: {
@@ -62,9 +72,8 @@ export default function LoginPage() {
         });
 
         localStorage.setItem("token", result.token);
-
-        // Use router.push inside a useEffect or a callback
-        router.push("/");
+        setIsLoggedIn(true);
+        router.push("/"); // Redirect to dashboard on successful login
       } else {
         toast({
           variant: "destructive",
@@ -82,6 +91,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (isLoggedIn) {
+    return null; // Don't render login form if already logged in
+  }
 
   return (
     

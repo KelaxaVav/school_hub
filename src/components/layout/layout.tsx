@@ -24,7 +24,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { Home } from "lucide-react";
+import { Home, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
@@ -34,6 +34,11 @@ const routes = [
     label: "Dashboard",
     href: "/",
     icon: Home,
+  },
+  {
+    label: "Students",
+    href: "/students",
+    icon: User,
   },
 ];
 
@@ -90,4 +95,3 @@ export function Layout({ children }: LayoutProps) {
     </SidebarProvider>
   );
 }
-

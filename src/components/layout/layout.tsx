@@ -24,7 +24,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { Home, User } from "lucide-react";
+import { Home, User, Users, Package, PencilRuler } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
@@ -40,6 +40,21 @@ const routes = [
     label: "Students",
     href: "/students",
     icon: User,
+  },
+  {
+    label: "Staff",
+    href: "/staff",
+    icon: Users,
+  },
+  {
+    label: "Inventory",
+    href: "/inventory",
+    icon: Package,
+  },
+  {
+    label: "Blog",
+    href: "/blog",
+    icon: PencilRuler,
   },
 ];
 

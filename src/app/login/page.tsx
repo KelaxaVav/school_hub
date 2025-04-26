@@ -17,9 +17,10 @@ import { useForm, Controller } from "react-hook-form";
 import {z} from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '@/redux/features/loadingSlice';
 import Loading from "@/components/Loading";
+import { login } from '@/redux/features/userSlice';
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -35,6 +36,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const dispatch = useDispatch();
+  const isLoading = useSelector((state: any) => state.loading.isLoading);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -68,14 +70,20 @@ export default function LoginPage() {
 
       const result = await response.json();
 
-      if (response.ok && result.token) {
+      if (response.ok && result.status) {
         toast({
           title: "Login successful.",
           description: "Redirecting to dashboard...",
         });
 
-        localStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.meta.access_token);
         setIsLoggedIn(true);
+         // Dispatch login action to update Redux store
+        dispatch(login({
+          username: result.data.username,
+          token: result.meta.access_token,
+          userData: result.data, // Store the entire user data
+        }));
         router.push("/"); // Redirect to dashboard on successful login
       } else {
         toast({
@@ -102,7 +110,7 @@ export default function LoginPage() {
   return (
     
       <div className="container py-4 h-screen flex items-center justify-center">
-        <Loading />
+        {isLoading && <Loading />}
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle>Login</CardTitle>
@@ -144,3 +152,4 @@ export default function LoginPage() {
     
   );
 }
+

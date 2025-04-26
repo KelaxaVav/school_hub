@@ -28,6 +28,7 @@ import { Home, User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const routes = [
   {
@@ -66,9 +67,11 @@ export function Layout({ children }: LayoutProps) {
             <SidebarMenu>
               {routes.map((route) => (
                 <SidebarMenuItem key={route.href}>
-                  <SidebarMenuButton href={route.href} isActive={pathname === route.href}>
-                    <route.icon className="mr-2 h-4 w-4" />
-                    <span>{route.label}</span>
+                  <SidebarMenuButton href={route.href} asChild isActive={pathname === route.href}>
+                    <Link href={route.href} className="w-full flex items-center gap-2">
+                      <route.icon className="mr-2 h-4 w-4" />
+                      <span>{route.label}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -95,4 +98,3 @@ export function Layout({ children }: LayoutProps) {
     </SidebarProvider>
   );
 }
-

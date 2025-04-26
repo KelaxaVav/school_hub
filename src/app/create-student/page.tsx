@@ -139,8 +139,9 @@ export default function CreateStudentPage() {
             <CardDescription>Enter student details to create a new student.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex">
-              <div className="w-1/2 pr-2">
+            <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
+              {/* First Column */}
+              <div>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="name" className="text-right">
@@ -214,9 +215,48 @@ export default function CreateStudentPage() {
                       )}
                     />
                   </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="addressCity" className="text-right">
+                      Address City
+                    </Label>
+                     <Controller
+                      name="addressCity"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="addressCity" placeholder="Address City" className="col-span-3" {...field} />
+                      )}
+                    />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="image" className="text-right">
+                      Image URL
+                    </Label>
+                     <Controller
+                      name="image"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="image" placeholder="Image URL" className="col-span-3" {...field} />
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="grade" className="text-right">
+                      Grade
+                    </Label>
+                     <Controller
+                      name="grade"
+                      control={control}
+                      render={({ field }) => (
+                        <Input id="grade" placeholder="Grade" className="col-span-3" {...field} />
+                      )}
+                    />
+                  </div>
+                 
                 </div>
               </div>
-              <div className="w-1/2 pl-2">
+
+              {/* Second Column */}
+              <div>
                 <div className="grid gap-4 py-4">
                  <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="username" className="text-right">
@@ -290,45 +330,30 @@ export default function CreateStudentPage() {
                       )}
                     />
                   </div>
-                 
-                </div>
-              </div>
-            
-
-            
-              <div className="w-1/2 pr-2">
-                 <div className="grid gap-4 py-4">
                    <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="image" className="text-right">
-                      Image URL
+                    <Label htmlFor="stream" className="text-right">
+                      Stream
                     </Label>
-                     <Controller
-                      name="image"
+                    <Controller
+                      name="stream"
                       control={control}
                       render={({ field }) => (
-                        <Input id="image" placeholder="Image URL" className="col-span-3" {...field} />
+                        <Input id="stream" placeholder="Stream" className="col-span-3" {...field} />
                       )}
                     />
                   </div>
-                  
-                 
                    <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="addressCity" className="text-right">
-                      Address City
+                    <Label htmlFor="location" className="text-right">
+                      Location
                     </Label>
-                     <Controller
-                      name="addressCity"
+                    <Controller
+                      name="location"
                       control={control}
                       render={({ field }) => (
-                        <Input id="addressCity" placeholder="Address City" className="col-span-3" {...field} />
+                        <Input id="location" placeholder="Location" className="col-span-3" {...field} />
                       )}
                     />
                   </div>
-
-                 </div>
-              </div>
-              <div className="w-1/2 pl-2">
-                 <div className="grid gap-4 py-4">
                    <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="dateOfBirth" className="text-right">
                       Date of Birth
@@ -448,64 +473,7 @@ export default function CreateStudentPage() {
                       )}
                     />
                   </div>
-                 </div>
-              </div>
-            
 
-            
-              <div className="w-1/2 pr-2">
-                 <div className="grid gap-4 py-4">
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="grade" className="text-right">
-                      Grade
-                    </Label>
-                     <Controller
-                      name="grade"
-                      control={control}
-                      render={({ field }) => (
-                        <Input id="grade" placeholder="Grade" className="col-span-3" {...field} />
-                      )}
-                    />
-                  </div>
-                 </div>
-              </div>
-              <div className="w-1/2 pl-2">
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="stream" className="text-right">
-                      Stream
-                    </Label>
-                    <Controller
-                      name="stream"
-                      control={control}
-                      render={({ field }) => (
-                        <Input id="stream" placeholder="Stream" className="col-span-3" {...field} />
-                      )}
-                    />
-                  </div>
-                 </div>
-              </div>
-           
-
-           
-              <div className="w-1/2 pr-2">
-                 <div className="grid gap-4 py-4">
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="location" className="text-right">
-                      Location
-                    </Label>
-                    <Controller
-                      name="location"
-                      control={control}
-                      render={({ field }) => (
-                        <Input id="location" placeholder="Location" className="col-span-3" {...field} />
-                      )}
-                    />
-                  </div>
-                 </div>
-              </div>
-              <div className="w-1/2 pl-2">
-                <div className="grid gap-4 py-4">
                     <div>
                       <Label>Previous Schools</Label>
                       {previousSchools.map((school, index) => (
@@ -592,12 +560,10 @@ export default function CreateStudentPage() {
                         Add School
                       </Button>
                     </div>
-                 </div>
+                 
+                </div>
               </div>
-           
-             
-                <Button type="submit" className="ml-auto">Create Student</Button>
-             
+              <Button type="submit" className="ml-auto">Create Student</Button>
             </form>
           </CardContent>
         </Card>

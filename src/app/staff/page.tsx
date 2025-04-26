@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface StaffMember {
   id: string;
@@ -48,36 +49,52 @@ const columns = [
 ];
 
 
-const mockStaffMembers: StaffMember[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Teacher",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    role: "Principal",
-  },
-  {
-    id: "3",
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    role: "Assistant",
-  },
-];
+const fetchStaffMembers = async (): Promise<StaffMember[]> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const mockStaffMembers: StaffMember[] = [
+        {
+          id: "1",
+          name: "John Doe",
+          email: "john.doe@example.com",
+          role: "Teacher",
+        },
+        {
+          id: "2",
+          name: "Jane Smith",
+          email: "jane.smith@example.com",
+          role: "Principal",
+        },
+        {
+          id: "3",
+          name: "Alice Johnson",
+          email: "alice.johnson@example.com",
+          role: "Assistant",
+        },
+      ];
+      resolve(mockStaffMembers);
+    }, 500);
+  });
+};
 
 export default function StaffPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
+  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+    const router = useRouter();
+
 
   useEffect(() => {
-    setTimeout(() => {
+    const loadStaffMembers = async () => {
+      setLoading(true);
+      const staffData = await fetchStaffMembers();
+      setStaffMembers(staffData);
       setLoading(false);
-    }, 500);
+    };
+
+    loadStaffMembers();
   }, []);
 
   const handleAddStaff = () => {
@@ -93,44 +110,13 @@ export default function StaffPage() {
     <Layout>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle>Staff</CardTitle>
-          <CardDescription>Manage staff records.</CardDescription>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <Plus className="mr-2 h-4 w-4" /> Add Staff
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add Staff</DialogTitle>
-                <DialogDescription>
-                  Add a new staff to the system.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input id="name" defaultValue="" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email" className="text-right">
-                    Email
-                  </Label>
-                  <Input id="email" defaultValue="" className="col-span-3" />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="role" className="text-right">
-                    Role
-                  </Label>
-                  <Input id="role" defaultValue="" className="col-span-3" />
-                </div>
-              </div>
-              <Button type="submit" onClick={handleAddStaff}>Add</Button>
-            </DialogContent>
-          </Dialog>
+          <div>
+            <CardTitle>Staff</CardTitle>
+            <CardDescription>Manage staff records.</CardDescription>
+          </div>
+           <Button variant="outline" onClick={() => router.push("/create-staff")}>
+            <Plus className="mr-2 h-4 w-4" /> Add Staff
+          </Button>
         </CardHeader>
         <CardContent>
           <Table>
@@ -155,7 +141,7 @@ export default function StaffPage() {
                   ))}
                 </>
               ) : (
-                mockStaffMembers.map((staff) => (
+                staffMembers.map((staff) => (
                   <TableRow key={staff.id}>
                     <TableCell>{staff.name}</TableCell>
                     <TableCell>{staff.email}</TableCell>
@@ -170,3 +156,4 @@ export default function StaffPage() {
     </Layout>
   );
 }
+

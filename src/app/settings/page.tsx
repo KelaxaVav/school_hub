@@ -30,28 +30,30 @@ export default function SettingsPage() {
 
   return (
     <Layout>
-      <Card>
-        <CardHeader className="space-y-0 pb-2">
-          <CardTitle>Settings</CardTitle>
-          <CardDescription>Manage your stream settings.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="streamName" className="text-right">
-                Stream Name
-              </Label>
-              <Input
-                id="streamName"
-                value={streamName}
-                onChange={(e) => setStreamName(e.target.value)}
-                className="col-span-3"
-              />
+      <div className="grid gap-4">
+        <Card className="col-span-4 lg:col-span-12">
+          <CardHeader className="space-y-0 pb-2">
+            <CardTitle>Stream Settings</CardTitle>
+            <CardDescription>Manage your stream settings.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="streamName" className="text-right">
+                  Stream Name
+                </Label>
+                <Input
+                  id="streamName"
+                  value={streamName}
+                  onChange={(e) => setStreamName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <Button onClick={handleCreateStream}>Create Stream</Button>
             </div>
-            <Button onClick={handleCreateStream}>Create Stream</Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </Layout>
   );
 }

@@ -34,6 +34,9 @@ const FormSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
+   confirmPassword: z.string().min(8, {
+    message: "Confirm Password must be at least 8 characters.",
+  }),
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
@@ -77,6 +80,7 @@ export default function CreateStudentPage() {
       name: "",
       username: "",
       password: "",
+       confirmPassword: "",
       email: "",
       gender: "",
       image: "",
@@ -284,6 +288,18 @@ export default function CreateStudentPage() {
                       control={control}
                       render={({ field }) => (
                         <Input type="password" id="password" placeholder="Password" className="col-span-3" {...field} />
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="confirmPassword" className="text-right">
+                      Confirm Password
+                    </Label>
+                     <Controller
+                      name="confirmPassword"
+                      control={control}
+                      render={({ field }) => (
+                        <Input type="password" id="confirmPassword" placeholder="Confirm Password" className="col-span-3" {...field} />
                       )}
                     />
                   </div>
@@ -576,4 +592,5 @@ export default function CreateStudentPage() {
     </Layout>
   );
 }
+
 

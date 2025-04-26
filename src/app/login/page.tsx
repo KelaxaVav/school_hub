@@ -33,6 +33,10 @@ export default function LoginPage() {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+     defaultValues: {
+      username: "",
+      password: "",
+    },
   });
 
   const { control, handleSubmit } = form;
@@ -40,26 +44,41 @@ export default function LoginPage() {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setLoading(true);
 
-    // Simulate an API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setLoading(false);
-
-    if (data.username === "admin" && data.password === "password") {
-      toast({
-        title: "Login successful.",
-        description: "Redirecting to dashboard...",
+      try {
+      const response = await fetch('https://api.puthukkulammv.com/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
 
-      localStorage.setItem("token", "loggedIn");
+      const result = await response.json();
 
-      router.push("/");
-    } else {
+      if (response.ok && result.token) {
+        toast({
+          title: "Login successful.",
+          description: "Redirecting to dashboard...",
+        });
+
+        localStorage.setItem("token", result.token);
+
+        router.push("/");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Login failed.",
+          description: result.message || "Invalid username or password.",
+        });
+      }
+    } catch (error:any) {
       toast({
         variant: "destructive",
         title: "Login failed.",
-        description: "Invalid username or password.",
+        description: error.message || "An error occurred during login.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,4 +126,3 @@ export default function LoginPage() {
     
   );
 }
-

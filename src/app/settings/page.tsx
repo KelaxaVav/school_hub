@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function SettingsPage() {
   const [streamName, setStreamName] = useState("");
   const [schoolName, setSchoolName] = useState("");
+  const [subjectName, setSubjectName] = useState("");
   const { toast } = useToast();
 
   const handleCreateStream = () => {
@@ -33,6 +34,14 @@ export default function SettingsPage() {
       description: `School "${schoolName}" has been created.`,
     });
     setSchoolName("");
+  };
+
+    const handleCreateSubject = () => {
+    toast({
+      title: "Subject created.",
+      description: `Subject "${subjectName}" has been created.`,
+    });
+    setSubjectName("");
   };
 
   return (
@@ -83,8 +92,30 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+         <Card className="w-1/4">
+          <CardHeader className="space-y-0 pb-2">
+            <CardTitle>Subject Settings</CardTitle>
+            <CardDescription>Manage your Subject settings.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="subjectName" className="text-right">
+                  Subject Name
+                </Label>
+                <Input
+                  id="subjectName"
+                  value={subjectName}
+                  onChange={(e) => setSubjectName(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
+              <Button onClick={handleCreateSubject}>Create Subject</Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );
 }
-

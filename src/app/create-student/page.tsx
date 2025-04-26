@@ -104,66 +104,6 @@ export default function CreateStudentPage() {
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="username" className="text-right">
-                      Username
-                    </Label>
-                    <Input
-                      type="text"
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="password" className="text-right">
-                      Password
-                    </Label>
-                    <Input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="email" className="text-right">
-                      Email
-                    </Label>
-                    <Input
-                      type="email"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="gender" className="text-right">
-                      Gender
-                    </Label>
-                    <Input
-                      type="text"
-                      id="gender"
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="image" className="text-right">
-                      Image URL
-                    </Label>
-                    <Input
-                      type="text"
-                      id="image"
-                      value={image}
-                      onChange={(e) => setImage(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="fatherName" className="text-right">
                       Father's Name
                     </Label>
@@ -175,7 +115,7 @@ export default function CreateStudentPage() {
                       className="col-span-3"
                     />
                   </div>
-                   <div className="grid grid-cols-4 items-center gap-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="motherName" className="text-right">
                       Mother's Name
                     </Label>
@@ -187,70 +127,8 @@ export default function CreateStudentPage() {
                       className="col-span-3"
                     />
                   </div>
-                </div>
-              </div>
-              <div className="w-1/2 pl-2">
-                <div className="grid gap-4 py-4">
-                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="nicNumber" className="text-right">
-                      NIC Number
-                    </Label>
-                    <Input
-                      type="text"
-                      id="nicNumber"
-                      value={nicNumber}
-                      onChange={(e) => setNicNumber(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="indexNo" className="text-right">
-                      Index No
-                    </Label>
-                    <Input
-                      type="text"
-                      id="indexNo"
-                      value={indexNo}
-                      onChange={(e) => setIndexNo(e.target.value)}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="dateOfBirth" className="text-right">
-                      Date of Birth
-                    </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !dateOfBirth && "text-muted-foreground"
-                          )}
-                        >
-                          {dateOfBirth ? (
-                            format(dateOfBirth, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={dateOfBirth}
-                          onSelect={setDateOfBirth}
-                          disabled={(date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="address" className="text-right">
+                    <Label htmlFor="addressNo" className="text-right">
                       Address No
                     </Label>
                     <Input
@@ -285,7 +163,105 @@ export default function CreateStudentPage() {
                       className="col-span-3"
                     />
                   </div>
+                </div>
+              </div>
+              <div className="w-1/2 pl-2">
+                <div className="grid gap-4 py-4">
+                 <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="username" className="text-right">
+                      Username
+                    </Label>
+                    <Input
+                      type="text"
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="password" className="text-right">
+                      Password
+                    </Label>
+                    <Input
+                      type="password"
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="nicNumber" className="text-right">
+                      NIC Number
+                    </Label>
+                    <Input
+                      type="text"
+                      id="nicNumber"
+                      value={nicNumber}
+                      onChange={(e) => setNicNumber(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="email" className="text-right">
+                      Email
+                    </Label>
+                    <Input
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="gender" className="text-right">
+                      Gender
+                    </Label>
+                    <Input
+                      type="text"
+                      id="gender"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="indexNo" className="text-right">
+                      Index No
+                    </Label>
+                    <Input
+                      type="text"
+                      id="indexNo"
+                      value={indexNo}
+                      onChange={(e) => setIndexNo(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+
+            <div className="flex">
+              <div className="w-1/2 pr-2">
+                 <div className="grid gap-4 py-4">
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="image" className="text-right">
+                      Image URL
+                    </Label>
+                    <Input
+                      type="text"
+                      id="image"
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                  
+                 
+                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="addressCity" className="text-right">
                       Address City
                     </Label>
@@ -296,6 +272,44 @@ export default function CreateStudentPage() {
                       onChange={(e) => setAddressCity(e.target.value)}
                       className="col-span-3"
                     />
+                  </div>
+
+                 </div>
+              </div>
+              <div className="w-1/2 pl-2">
+                 <div className="grid gap-4 py-4">
+                   <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="dateOfBirth" className="text-right">
+                      Date of Birth
+                    </Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !dateOfBirth && "text-muted-foreground"
+                          )}
+                        >
+                          {dateOfBirth ? (
+                            format(dateOfBirth, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={dateOfBirth}
+                          onSelect={setDateOfBirth}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
 
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -365,8 +379,14 @@ export default function CreateStudentPage() {
                       </PopoverContent>
                     </Popover>
                   </div>
+                 </div>
+              </div>
+            </div>
 
-                  <div className="grid grid-cols-4 items-center gap-4">
+            <div className="flex">
+              <div className="w-1/2 pr-2">
+                 <div className="grid gap-4 py-4">
+                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="grade" className="text-right">
                       Grade
                     </Label>
@@ -378,6 +398,10 @@ export default function CreateStudentPage() {
                       className="col-span-3"
                     />
                   </div>
+                 </div>
+              </div>
+              <div className="w-1/2 pl-2">
+                <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="stream" className="text-right">
                       Stream
@@ -390,7 +414,14 @@ export default function CreateStudentPage() {
                       className="col-span-3"
                     />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
+                 </div>
+              </div>
+            </div>
+
+            <div className="flex">
+              <div className="w-1/2 pr-2">
+                 <div className="grid gap-4 py-4">
+                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="location" className="text-right">
                       Location
                     </Label>
@@ -402,95 +433,98 @@ export default function CreateStudentPage() {
                       className="col-span-3"
                     />
                   </div>
-                </div>
+                 </div>
               </div>
-            </div>
+              <div className="w-1/2 pl-2">
+                <div className="grid gap-4 py-4">
+                    <div>
+                      <Label>Previous Schools</Label>
+                      {previousSchools.map((school, index) => (
+                        <div key={index} className="grid grid-cols-4 items-center gap-4 py-2">
+                          <Label htmlFor={`previousSchool-${index}`} className="text-right">
+                            School {index + 1}
+                          </Label>
+                          <SchoolSelect
+                            id={`previousSchool-${index}`}
+                            value={school.school}
+                            onChange={(value) =>
+                              handleSchoolChange(index, "school", value)
+                            }
+                            className="col-span-3"
+                          />
+                          <Label htmlFor={`previousSchoolFrom-${index}`} className="text-right">
+                            From
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[120px] pl-3 text-left font-normal",
+                                  !school.from && "text-muted-foreground"
+                                )}
+                              >
+                                {school.from ? (
+                                  format(school.from, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={school.from}
+                                onSelect={(date) =>
+                                  handleSchoolChange(index, "from", date)
+                                }
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
 
-            <div>
-              <Label>Previous Schools</Label>
-              {previousSchools.map((school, index) => (
-                <div key={index} className="grid grid-cols-4 items-center gap-4 py-2">
-                  <Label htmlFor={`previousSchool-${index}`} className="text-right">
-                    School {index + 1}
-                  </Label>
-                  <SchoolSelect
-                    id={`previousSchool-${index}`}
-                    value={school.school}
-                    onChange={(value) =>
-                      handleSchoolChange(index, "school", value)
-                    }
-                    className="col-span-3"
-                  />
-                  <Label htmlFor={`previousSchoolFrom-${index}`} className="text-right">
-                    From
-                  </Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[120px] pl-3 text-left font-normal",
-                          !school.from && "text-muted-foreground"
-                        )}
-                      >
-                        {school.from ? (
-                          format(school.from, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
+                          <Label htmlFor={`previousSchoolTo-${index}`} className="text-right">
+                            To
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[120px] pl-3 text-left font-normal",
+                                  !school.to && "text-muted-foreground"
+                                )}
+                              >
+                                {school.to ? (
+                                  format(school.to, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={school.to}
+                                onSelect={(date) => handleSchoolChange(index, "to", date)}
+                                disabled={(date) =>
+                                  date > new Date() || date < new Date("1900-01-01")
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      ))}
+                      <Button type="button" variant="secondary" onClick={handleAddSchool}>
+                        Add School
                       </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={school.from}
-                        onSelect={(date) =>
-                          handleSchoolChange(index, "from", date)
-                        }
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-
-                  <Label htmlFor={`previousSchoolTo-${index}`} className="text-right">
-                    To
-                  </Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[120px] pl-3 text-left font-normal",
-                          !school.to && "text-muted-foreground"
-                        )}
-                      >
-                        {school.to ? (
-                          format(school.to, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={school.to}
-                        onSelect={(date) => handleSchoolChange(index, "to", date)}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              ))}
-              <Button type="button" variant="secondary" onClick={handleAddSchool}>
-                Add School
-              </Button>
+                    </div>
+                 </div>
+              </div>
             </div>
             <Button onClick={handleSubmit}>Create Student</Button>
           </CardContent>
@@ -499,3 +533,4 @@ export default function CreateStudentPage() {
     </Layout>
   );
 }
+

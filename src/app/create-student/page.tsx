@@ -100,7 +100,12 @@ export default function CreateStudentPage() {
 
   const { control, handleSubmit } = form;
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    // Simulate an API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    console.log("Form data submitted:", data);
+
     toast({
       title: "Student created.",
       description: `Student "${data.name}" has been created.`,
@@ -571,3 +576,4 @@ export default function CreateStudentPage() {
     </Layout>
   );
 }
+

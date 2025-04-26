@@ -41,14 +41,14 @@ const FormSchema = z.object({
   teacherGrade: z.string(),
 });
 
-interface StaffMember {
+interface Leave {
   id: string;
-  image: string;
-  name: string;
-  gender: string;
-  nic: string;
-  dateOfBirth: Date;
-  teacherGrade: string;
+  staff_id: string;
+  startDate: Date;
+  endDate: Date;
+  leaveType: string;
+  reason: string;
+  status: string;
 }
 
 const columns = [
@@ -57,28 +57,24 @@ const columns = [
     label: "#",
   },
   {
-    id: "image",
-    label: "Image",
+    id: "staff_id",
+    label: "Staff Id",
   },
   {
-    id: "name",
-    label: "Name",
+    id: "startDate",
+    label: "Start Date",
   },
   {
-    id: "gender",
-    label: "Gender",
+    id: "endDate",
+    label: "End Date",
   },
   {
-    id: "nic",
-    label: "NIC",
+    id: "leaveType",
+    label: "Leave Type",
   },
   {
-    id: "dateOfBirth",
-    label: "Date of Birth",
-  },
-  {
-    id: "teacherGrade",
-    label: "Grade",
+    id: "status",
+    label: "Status",
   },
   {
     id: "actions",
@@ -109,47 +105,57 @@ const customFetch = async (url: string, options: RequestInit = {}) => {
 };
 
 
-const fetchStaffMembers = async (): Promise<StaffMember[]> => {
-    try {
-        const response = await customFetch('https://api.puthukkulammv.com/api/staff'); // Replace with your actual API endpoint
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-
-        const staffList: StaffMember[] = data.data.map((staff: any) => ({
-             id: staff.staff_id || 'N/A',  // Ensure staff_id exists
-             image: staff.image || 'https://picsum.photos/50/50', //Provide a default image if it's null
-             name: staff.full_name || 'N/A',  // Use full_name as the staff name
-             gender: staff.gender || 'N/A',
-             nic: staff.nic_number || 'N/A', //Ensure staff.nic_number exists
-             dateOfBirth: new Date(staff.date_of_birth) || new Date(), // Ensure a valid date
-             teacherGrade: staff.teacher_grade || 'N/A',  // Ensure teacher_grade exists
-          }));
-        return staffList;
-    } catch (error:any) {
-        console.error("Failed to fetch staff members:", error);
-         toast({
-            title: "Error",
-            description: error.message || "Failed to fetch staff members.",
-        });
-        return [];
-    }
-};
-
-const deleteStaffMember = async (id: string): Promise<void> => {
+const fetchLeaves = async (): Promise<Leave[]> => {
   // Simulate an API call
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log(`Deleted staff member with id: ${id}`);
+      const mockLeaves: Leave[] = [
+        {
+          id: "1",
+          staff_id: "123",
+          startDate: new Date(),
+          endDate: new Date(),
+          leaveType: "Sick Leave",
+          reason: "Fever",
+          status: "Pending",
+        },
+        {
+          id: "2",
+          staff_id: "456",
+          startDate: new Date(),
+          endDate: new Date(),
+          leaveType: "Casual Leave",
+          reason: "Personal",
+          status: "Approved",
+        },
+        {
+          id: "3",
+          staff_id: "789",
+          startDate: new Date(),
+          endDate: new Date(),
+          leaveType: "Annual Leave",
+          reason: "Vacation",
+          status: "Rejected",
+        },
+      ];
+      resolve(mockLeaves);
+    }, 500);
+  });
+};
+
+const deleteLeave = async (id: string): Promise<void> => {
+  // Simulate an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(`Deleted leave with id: ${id}`);
       resolve();
     }, 500);
   });
 };
 
-export default function StaffPage() {
+export default function LeavesPage() {
   const [loading, setLoading] = useState(true);
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
+  const [leaves, setLeaves] = useState<Leave[]>([]);
   const router = useRouter();
   const { toast } = useToast();
     const form = useForm<z.infer<typeof FormSchema>>({
@@ -159,22 +165,22 @@ export default function StaffPage() {
   const { handleSubmit } = form;
 
   useEffect(() => {
-    const loadStaffMembers = async () => {
+    const loadLeaves = async () => {
       setLoading(true);
-      const staffData = await fetchStaffMembers();
-      setStaffMembers(staffData);
+      const leaveData = await fetchLeaves();
+      setLeaves(leaveData);
       setLoading(false);
     };
 
-    loadStaffMembers();
+    loadLeaves();
   }, []);
 
   const onDelete = async (id: string) => {
-    await deleteStaffMember(id);
-    setStaffMembers(staffMembers.filter((staff) => staff.id !== id));
+    await deleteLeave(id);
+    setLeaves(leaves.filter((leave) => leave.id !== id));
     toast({
-      title: "Staff member deleted.",
-      description: "The staff member has been deleted successfully.",
+      title: "Leave deleted.",
+      description: "The leave has been deleted successfully.",
     });
   };
 
@@ -184,11 +190,11 @@ export default function StaffPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div>
-            <CardTitle>Staff</CardTitle>
-            <CardDescription>Manage staff records.</CardDescription>
+            <CardTitle>Leaves</CardTitle>
+            <CardDescription>Manage Leaves records.</CardDescription>
           </div>
-           <Button variant="outline" onClick={() => router.push("/create-staff")}>
-            <Plus className="mr-2 h-4 w-4" /> Add Staff
+           <Button variant="outline" onClick={() => router.push("/")}>
+            <Plus className="mr-2 h-4 w-4" /> Add Leave
           </Button>
         </CardHeader>
         <CardContent>
@@ -206,35 +212,23 @@ export default function StaffPage() {
                   {Array.from({length: 3}).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell>{i + 1}</TableCell>
-                       <TableCell>
-                        <Skeleton className="h-10 w-10 rounded-full" />
-                      </TableCell>
-                      {Array.from({length: columns.length - 3}).map((_, j) => (
+                      {Array.from({length: columns.length - 1}).map((_, j) => (
                         <TableCell key={j}>
                           <Skeleton className="h-4 w-[80%]" />
                         </TableCell>
                       ))}
-                      <TableCell>
-                        <Skeleton className="h-4 w-[60%]" />
-                      </TableCell>
                     </TableRow>
                   ))}
                 </>
               ) : (
-                staffMembers.map((staff, index) => (
-                  <TableRow key={staff.id}>
+                leaves.map((leave, index) => (
+                  <TableRow key={leave.id}>
                      <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      <Avatar>
-                        <AvatarImage src={staff.image} alt={staff.name} />
-                        <AvatarFallback>{staff.name[0]}</AvatarFallback>
-                      </Avatar>
-                    </TableCell>
-                    <TableCell>{staff.name}</TableCell>
-                    <TableCell>{staff.gender}</TableCell>
-                    <TableCell>{staff.nic}</TableCell>
-                    <TableCell>{format(staff.dateOfBirth, "PPP")}</TableCell>
-                    <TableCell>{staff.teacherGrade}</TableCell>
+                    <TableCell>{leave.staff_id}</TableCell>
+                    <TableCell>{format(leave.startDate, "PPP")}</TableCell>
+                    <TableCell>{format(leave.endDate, "PPP")}</TableCell>
+                    <TableCell>{leave.leaveType}</TableCell>
+                    <TableCell>{leave.status}</TableCell>
                     <TableCell>
                       <Button variant="ghost" size="icon">
                         <Edit className="h-4 w-4" />
@@ -249,12 +243,12 @@ export default function StaffPage() {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete the staff
+                              This action cannot be undone. This will permanently delete the leave
                               and remove their data from our servers.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-500 text-red-50"  onClick={() => onDelete(staff.id)}>Delete</AlertDialogAction>
+                          <AlertDialogAction className="bg-red-500 text-red-50"  onClick={() => onDelete(leave.id)}>Delete</AlertDialogAction>
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>

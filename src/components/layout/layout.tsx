@@ -24,7 +24,7 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
-import { Home, User, Users, Package, PencilRuler, Settings, Shield, Users2 } from "lucide-react";
+import { Home, User, Users, Package, PencilRuler, Settings, Shield, Users2, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
@@ -54,6 +54,11 @@ const routes = [
     label: "Users",
     href: "/users",
     icon: Users2,
+  },
+   {
+    label: "Leaves",
+    href: "/leaves",
+    icon: Calendar,
   },
   {
     label: "Inventory",
@@ -165,4 +170,3 @@ export function Layout({ children, hideNavigation }: LayoutProps) {
     
   );
 }
-

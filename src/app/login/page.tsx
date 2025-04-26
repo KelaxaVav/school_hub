@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '@/redux/features/userSlice';
 import { setLoading } from '@/redux/features/loadingSlice';
 import { toast } from 'react-toastify';
+import { Shield } from "lucide-react";
 
 
 const FormSchema = z.object({
@@ -77,7 +78,7 @@ export default function LoginPage() {
           token: result.meta.access_token,
           userData: result.data, // Store the entire user data
         }));
-        toast.success("Login successful. Redirecting to dashboard...");
+        toast.success(result.meta.message || "Login successful. Redirecting to dashboard...");
         router.push("/"); // Redirect to dashboard on successful login
       } else {
        toast.error(result.message || "Invalid username or password.");
@@ -138,3 +139,4 @@ export default function LoginPage() {
     
   );
 }
+

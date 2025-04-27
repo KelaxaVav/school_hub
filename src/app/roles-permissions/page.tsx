@@ -29,6 +29,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -46,6 +54,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/redux/features/loadingSlice";
 import { toast } from "react-toastify";
+import { customFetch } from "@/lib/utils";
 
 const RoleSchema = z.object({
   name: z.string().min(2, {
@@ -89,35 +98,6 @@ const columns = [
     label: "Actions",
   },
 ];
-
-const customFetch = async (
-  
-  url: string,
-  options: RequestInit = {}
-): Promise<Response> => {
-  const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-  // Check if the URL is the login route
-  if (url.includes("/api/auth/login")) {
-    // If it's the login route, don't add the token
-    return fetch(NEXT_PUBLIC_API_URL+url, options);
-  }
-
-  // Get the token from localStorage
-  const token = localStorage.getItem("token");
-
-  // If there's a token, add it to the headers
-  if (token) {
-    options.headers = {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json", // Ensure Content-Type is set
-    };
-  }
-
-  // Call the original fetch function
-  return fetch(NEXT_PUBLIC_API_URL+url, options);
-};
 
 const fetchRoles = async (): Promise<Role[]> => {
 
@@ -182,6 +162,29 @@ const updateRolePermissions = async (
   }
 };
 
+const updateRole = async (role_id: string, name: string): Promise<void> => {
+  try {
+    const response = await customFetch(`/role/${role_id}`, {
+        method: "PUT",
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name }),
+    });
+    const data = await response.json();
+    if (response.ok && data.status) {
+      toast.success("Role updated successfully!");
+    } else {
+      toast.error(data.meta.message || "Failed to update role.");
+    }
+  } catch (error: any) {
+    toast.error(
+      error.message || "An error occurred while updating the role."
+    );
+  }
+};
+
+
+
+
 export default function RolesPermissionsPage() {
   const [loadingRoles, setLoadingRoles] = useState(true);
   const [loadingPermissions, setLoadingPermissions] = useState(true);
@@ -190,6 +193,8 @@ export default function RolesPermissionsPage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
   const dispatch = useDispatch();
+    const { register, handleSubmit, reset } = useForm<z.infer<typeof RoleSchema>>({
+        resolver: zodResolver(RoleSchema), });
   const token = useSelector((state: any) => state.user.token);
 
   useEffect(() => {
@@ -254,17 +259,47 @@ export default function RolesPermissionsPage() {
   }
   
 
-  const onDeleteRole = async (id: string) => {
-    // Simulate an API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(`Deleted role with id: ${id}`);
-        setRoles(roles.filter((role:any) => role.id !== id));
-      toast.success("The role has been deleted successfully.");
-        resolve(true);
-      }, 500);
-    });
+  const onDeleteRole = async (role_id: string) => {
+    try {
+      const response = await customFetch(`/role/${role_id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+      if (response.ok && data.status) {
+        toast.success("role deleted successfully!");
+        // Remove the role from the roles list in the UI
+        setRoles(roles.filter((role) => role.role_id !== role_id));
+      } else {
+        toast.error(data.meta.message || "Failed to delete role.");
+      }
+    } catch (error: any) {
+      toast.error(
+        error.message || "An error occurred while deleting the role."
+      );
+    }
+   
+    
+
   };
+
+    const handleUpdateRole = async (role_id: string, name: string) => {
+        const updateRoleHandler = async () => {
+            try {
+                await updateRole(role_id, name);
+                const updatedRoles = roles.map((role) => {
+                    if (role.role_id === role_id) {
+                        return { ...role, name };
+                    }
+                    return role;
+                });
+                setRoles(updatedRoles);
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+        };
+        await updateRoleHandler();
+    }
 
   const handleSavePermissions = async () => {
     selectedPermissionsHandler();
@@ -336,9 +371,33 @@ export default function RolesPermissionsPage() {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{role.name}</TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="icon">
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Edit Role</DialogTitle>
+                              <DialogDescription>
+                                Update the name of the role here.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleSubmit((data) => handleUpdateRole(role.role_id.toString(), data.name))}>
+                                <div className="grid gap-4 py-4">
+                                  <div className="grid grid-cols-4 items-center gap-4">
+                                      <Label htmlFor="name" className="text-right">Name</Label>
+                                      <Input id="name" defaultValue={role.name} className="col-span-3" {...register("name")} />
+                                  </div>
+                                  <Button type="submit">Update</Button>
+                                </div>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
+
+
+
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button
@@ -363,7 +422,7 @@ export default function RolesPermissionsPage() {
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-red-500 text-red-50"
-                              onClick={() => onDeleteRole(role.id.toString())}
+                              onClick={() => onDeleteRole(role.role_id)}
                             >
                               Delete
                             </AlertDialogAction>
